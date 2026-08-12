@@ -1,0 +1,52 @@
+- generic [active] [ref=f2e1]:
+  - generic [ref=f2e2]:
+    - banner [ref=f2e218]:
+      - generic [ref=f2e219]:
+        - generic [ref=f2e220]: LF
+        - generic [ref=f2e221]:
+          - heading "LeadFlow" [level=1] [ref=f2e222]
+          - paragraph [ref=f2e223]: Premium Lead Calling Workspace
+      - navigation [ref=f2e224]:
+        - button "Overview" [ref=f2e225] [cursor=pointer]
+        - button "Leads" [ref=f2e231] [cursor=pointer]
+        - button "Analytics" [ref=f2e237] [cursor=pointer]
+        - button "Follow Ups" [ref=f2e241] [cursor=pointer]
+      - generic [ref=f2e244]:
+        - button "Settings" [ref=f2e245] [cursor=pointer]
+        - button "Clear" [ref=f2e249] [cursor=pointer]
+        - button "Export" [ref=f2e253] [cursor=pointer]
+    - generic [ref=f2e258]:
+      - generic [ref=f2e259]:
+        - heading "Analytics" [level=2] [ref=f2e260]
+        - generic [ref=f2e262]:
+          - button "7d" [ref=f2e263] [cursor=pointer]
+          - button "30d" [ref=f2e264] [cursor=pointer]
+          - button "90d" [ref=f2e265] [cursor=pointer]
+          - button "All Time" [ref=f2e266] [cursor=pointer]
+      - generic [ref=f2e267]:
+        - generic [ref=f2e268]:
+          - generic [ref=f2e269]: 33.3%
+          - generic [ref=f2e270]: Call Rate
+        - generic [ref=f2e271]:
+          - generic [ref=f2e272]: 0.0%
+          - generic [ref=f2e273]: Interest Rate
+        - generic [ref=f2e274]:
+          - generic [ref=f2e275]: 0.0%
+          - generic [ref=f2e276]: Follow-up Rate
+        - generic [ref=f2e277]:
+          - generic [ref=f2e278]: 100.0%
+          - generic [ref=f2e279]: Close Rate
+        - generic [ref=f2e280]:
+          - generic [ref=f2e281]: 33.3%
+          - generic [ref=f2e282]: Lead-to-Deal
+        - generic [ref=f2e283]:
+          - generic [ref=f2e284]: "?8,000"
+          - generic [ref=f2e285]: Revenue / Call
+      - generic [ref=f2e286]:
+        - generic [ref=f2e287]: Daily Calls
+        - generic [ref=f2e293]: Daily Revenue
+        - generic [ref=f2e300]: Deals Closed
+        - generic [ref=f2e306]: Funnel
+  - generic [ref=f2e211]:
+    - heading "Lead Details" [level=3] [ref=f2e212]
+    - button "Close" [ref=f2e213] [cursor=pointer]

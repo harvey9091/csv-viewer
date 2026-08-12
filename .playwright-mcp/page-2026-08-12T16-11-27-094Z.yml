@@ -1,0 +1,111 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e2]:
+    - banner [ref=f3e3]:
+      - generic [ref=f3e4]:
+        - generic [ref=f3e5]: LF
+        - generic [ref=f3e6]:
+          - heading "LeadFlow" [level=1] [ref=f3e7]
+          - paragraph [ref=f3e8]: Premium Lead Calling Workspace
+      - navigation [ref=f3e9]:
+        - button "Overview" [ref=f3e10] [cursor=pointer]
+        - button "Leads" [ref=f3e16] [cursor=pointer]
+        - button "Analytics" [ref=f3e22] [cursor=pointer]
+        - button "Follow Ups" [ref=f3e26] [cursor=pointer]
+      - generic [ref=f3e29]:
+        - button "Settings" [ref=f3e30] [cursor=pointer]
+        - button "Clear" [ref=f3e34] [cursor=pointer]
+        - button "Export" [ref=f3e38] [cursor=pointer]
+    - generic [ref=f3e42]:
+      - generic [ref=f3e43]:
+        - heading "Import your leads" [level=2] [ref=f3e48]
+        - paragraph [ref=f3e49]: Drop a CSV or Excel file here, or select one from your computer.
+        - generic [ref=f3e50] [cursor=pointer]: Choose File
+      - generic [ref=f3e54]:
+        - generic [ref=f3e55]:
+          - generic [ref=f3e56]: TODAY'S OUTREACH
+          - generic [ref=f3e61]: 1 / 100
+        - generic [ref=f3e64]:
+          - generic [ref=f3e65]:
+            - strong [ref=f3e66]: "99"
+            - text: remaining
+          - generic [ref=f3e67]:
+            - strong [ref=f3e68]: "1"
+            - text: interested
+          - generic [ref=f3e69]:
+            - strong [ref=f3e70]: "1"
+            - text: deals closed
+          - generic [ref=f3e71]:
+            - strong [ref=f3e72]: "?0"
+            - text: revenue today
+      - generic [ref=f3e73]:
+        - generic [ref=f3e74]:
+          - generic [ref=f3e82]: "3"
+          - generic [ref=f3e83]: Total Leads
+          - generic [ref=f3e84]: 3 leads loaded
+        - generic [ref=f3e85]:
+          - generic [ref=f3e90]: "1"
+          - generic [ref=f3e91]: Called
+          - generic [ref=f3e92]: 33.3% call rate
+        - generic [ref=f3e93]:
+          - generic [ref=f3e99]: "2"
+          - generic [ref=f3e100]: Remaining
+          - generic [ref=f3e101]: 2 not yet contacted
+        - generic [ref=f3e102]:
+          - generic [ref=f3e107]: "0"
+          - generic [ref=f3e108]: Interested
+          - generic [ref=f3e109]: 0.0% interest rate
+        - generic [ref=f3e110]:
+          - generic [ref=f3e116]: "0"
+          - generic [ref=f3e117]: Not Interested
+          - generic [ref=f3e118]: 0 declined
+        - generic [ref=f3e119]:
+          - generic [ref=f3e124]: "0"
+          - generic [ref=f3e125]: Follow Ups
+          - generic [ref=f3e126]: 0 today
+        - generic [ref=f3e127]:
+          - generic [ref=f3e132]: "1"
+          - generic [ref=f3e133]: Closed Deals
+          - generic [ref=f3e134]: 100.0% close rate
+        - generic [ref=f3e135]:
+          - generic [ref=f3e141]: "?8,000"
+          - generic [ref=f3e142]: Revenue
+          - generic [ref=f3e143]: "?8,000 avg"
+      - generic [ref=f3e144]:
+        - generic [ref=f3e145]:
+          - generic [ref=f3e146]: Funnel
+          - generic [ref=f3e149]:
+            - generic [ref=f3e150]:
+              - generic [ref=f3e151]: Total Leads
+              - generic [ref=f3e155]: "3"
+            - generic [ref=f3e156]:
+              - generic [ref=f3e157]: Called
+              - generic [ref=f3e161]: "1"
+            - generic [ref=f3e162]:
+              - generic [ref=f3e163]: Interested
+              - generic [ref=f3e166]: "0"
+            - generic [ref=f3e167]:
+              - generic [ref=f3e168]: Follow Ups
+              - generic [ref=f3e171]: "0"
+            - generic [ref=f3e172]:
+              - generic [ref=f3e173]: Closed Deals
+              - generic [ref=f3e177]: "1"
+          - generic [ref=f3e178]: "?8,000 Revenue"
+        - generic [ref=f3e180]:
+          - generic [ref=f3e181]: Quick Actions
+          - button "Call Next Lead" [ref=f3e184] [cursor=pointer]
+          - button "View All Leads" [ref=f3e187] [cursor=pointer]
+      - generic [ref=f3e193]:
+        - generic [ref=f3e194]: Recent Activity
+        - generic [ref=f3e197]:
+          - generic [ref=f3e198]:
+            - generic [ref=f3e200]: 7m ago
+            - generic [ref=f3e201]: Mount Road Bilal � Deal closed � ?8,000
+          - generic [ref=f3e202]:
+            - generic [ref=f3e204]: 9m ago
+            - generic [ref=f3e205]: Mount Road Bilal � Marked as interested
+          - generic [ref=f3e206]:
+            - generic [ref=f3e208]: 16m ago
+            - generic [ref=f3e209]: Mount Road Bilal � Called lead
+  - generic [ref=f3e211]:
+    - heading "Lead Details" [level=3] [ref=f3e212]
+    - button "Close" [ref=f3e213] [cursor=pointer]

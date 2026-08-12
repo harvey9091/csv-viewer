@@ -3,1532 +3,3152 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>LeadFlow â€” Lead Manager</title>
-
-<!-- XLSX support -->
+<title>LeadFlow â€” Premium Lead Calling Workspace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root {
-    --bg: #070a12;
-    --panel: rgba(15, 20, 34, .82);
-    --panel-2: rgba(20, 27, 45, .9);
-    --border: rgba(255,255,255,.08);
-    --border-hover: rgba(255,255,255,.16);
-    --text: #f4f7ff;
-    --muted: #8791aa;
+    --bg: #06080f;
+    --panel: rgba(14, 18, 30, 0.82);
+    --panel-solid: #0e121e;
+    --panel-2: rgba(20, 26, 42, 0.92);
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.14);
+    --text: #f0f3ff;
+    --text-secondary: #8b95b0;
     --blue: #5b7cff;
     --blue-2: #3155e7;
-    --cyan: #55d6d2;
-    --green: #42d392;
-    --red: #ff5f6d;
-    --yellow: #f6c85f;
-    --shadow: 0 24px 80px rgba(0,0,0,.38);
+    --cyan: #4fd1c5;
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+    --shadow: 0 24px 80px rgba(0,0,0,0.35);
+    --shadow-sm: 0 4px 16px rgba(0,0,0,0.2);
+    --radius: 14px;
+    --radius-sm: 10px;
+    --transition: 0.18s ease;
 }
-
-* {
-    box-sizing: border-box;
-}
-
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
     margin: 0;
     min-height: 100vh;
-    font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     color: var(--text);
-    background:
-        radial-gradient(circle at 15% 0%, rgba(49,85,231,.18), transparent 30%),
-        radial-gradient(circle at 90% 10%, rgba(85,214,210,.10), transparent 28%),
-        var(--bg);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    padding-top: 12px;
 }
+::selection { background: rgba(91,124,255,0.3); }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
 
 /* ---------- APP ---------- */
-
 .app {
-    max-width: 1500px;
-    margin: auto;
-    padding: 28px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 36px 28px 80px;
+}
+@media (max-width: 768px) {
+    .app { padding: 28px 14px 100px; }
 }
 
 /* ---------- HEADER ---------- */
-
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 28px;
+    gap: 32px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
 }
-
 .brand {
     display: flex;
     align-items: center;
     gap: 14px;
 }
-
 .logo {
-    width: 46px;
-    height: 46px;
-    border-radius: 14px;
-    display: grid;
-    place-items: center;
-    font-weight: 900;
-    font-size: 19px;
-    color: white;
-    background:
-        linear-gradient(135deg, var(--blue), var(--cyan));
-    box-shadow:
-        0 10px 30px rgba(49,85,231,.35);
-}
-
-.brand h1 {
-    margin: 0;
-    font-size: 21px;
-    letter-spacing: -.5px;
-}
-
-.brand p {
-    margin: 3px 0 0;
-    color: var(--muted);
-    font-size: 12px;
-}
-
-.header-actions {
-    display: flex;
-    gap: 10px;
-}
-
-/* ---------- BUTTONS ---------- */
-
-button {
-    font: inherit;
-    cursor: pointer;
-}
-
-.btn {
-    border: 1px solid var(--border);
-    background: rgba(255,255,255,.045);
-    color: var(--text);
-    padding: 11px 16px;
-    border-radius: 11px;
-    transition: .18s ease;
-}
-
-.btn:hover {
-    background: rgba(255,255,255,.08);
-    border-color: var(--border-hover);
-    transform: translateY(-1px);
-}
-
-.btn-primary {
-    border: 0;
-    background: linear-gradient(135deg, var(--blue-2), var(--blue));
-    box-shadow: 0 10px 25px rgba(49,85,231,.25);
-}
-
-.btn-primary:hover {
-    filter: brightness(1.1);
-}
-
-/* ---------- DROPZONE ---------- */
-
-.dropzone {
-    position: relative;
-    border: 1px dashed rgba(91,124,255,.45);
-    background:
-        linear-gradient(
-            135deg,
-            rgba(49,85,231,.08),
-            rgba(85,214,210,.035)
-        );
-    border-radius: 18px;
-    padding: 27px;
-    text-align: center;
-    transition: .2s;
-    margin-bottom: 22px;
-}
-
-.dropzone.dragover {
-    border-color: var(--cyan);
-    background: rgba(85,214,210,.08);
-    transform: scale(1.005);
-}
-
-.drop-icon {
-    width: 45px;
-    height: 45px;
-    margin: 0 auto 12px;
+    width: 44px;
+    height: 44px;
     border-radius: 13px;
     display: grid;
     place-items: center;
-    background: rgba(91,124,255,.12);
-    color: var(--blue);
-    font-size: 20px;
+    font-weight: 900;
+    font-size: 18px;
+    color: white;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    box-shadow: 0 10px 30px rgba(49,85,231,0.3);
+    flex-shrink: 0;
 }
-
-.dropzone h2 {
+.brand h1 {
     margin: 0;
-    font-size: 16px;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+    font-weight: 800;
 }
-
-.dropzone p {
-    margin: 7px 0 15px;
-    color: var(--muted);
+.brand p {
+    margin: 2px 0 0;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+}
+.header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.nav-pills {
+    display: flex;
+    gap: 6px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+}
+.nav-pill {
+    border: 0;
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 8px 14px;
+    border-radius: 9px;
     font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+.nav-pill:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-pill.active {
+    background: rgba(91,124,255,0.15);
+    color: var(--blue);
+    box-shadow: 0 0 0 1px rgba(91,124,255,0.2);
 }
 
+/* ---------- BUTTONS ---------- */
+button { font: inherit; cursor: pointer; border: 0; outline: none; }
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+    transition: var(--transition);
+    cursor: pointer;
+    white-space: nowrap;
+}
+.btn:hover { background: rgba(255,255,255,0.08); border-color: var(--border-hover); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn-primary {
+    background: linear-gradient(135deg, var(--blue-2), var(--blue));
+    color: white;
+    border: 0;
+    box-shadow: 0 8px 24px rgba(49,85,231,0.25);
+}
+.btn-primary:hover { filter: brightness(1.1); }
+.btn-success {
+    background: rgba(52,211,153,0.12);
+    color: var(--green);
+    border: 1px solid rgba(52,211,153,0.2);
+}
+.btn-success:hover { background: rgba(52,211,153,0.2); }
+.btn-danger {
+    background: rgba(248,113,113,0.1);
+    color: var(--red);
+    border: 1px solid rgba(248,113,113,0.2);
+}
+.btn-danger:hover { background: rgba(248,113,113,0.18); }
+.btn-sm { padding: 7px 12px; font-size: 12px; border-radius: 8px; }
+.btn-xs { padding: 5px 10px; font-size: 11px; border-radius: 7px; }
+.btn-icon {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    color: var(--text-secondary);
+}
+.btn-icon:hover { background: rgba(255,255,255,0.07); color: var(--text); }
+.btn-icon svg { width: 16px; height: 16px; }
+
+/* ---------- DROPZONE ---------- */
+.dropzone {
+    border: 1.5px dashed rgba(91,124,255,0.35);
+    background: linear-gradient(135deg, rgba(49,85,231,0.06), rgba(79,209,197,0.03));
+    border-radius: 18px;
+    padding: 36px;
+    text-align: center;
+    transition: 0.2s;
+    margin-bottom: 28px;
+    position: relative;
+}
+.dropzone.dragover {
+    border-color: var(--cyan);
+    background: rgba(79,209,197,0.06);
+    transform: scale(1.005);
+}
+.drop-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 14px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: rgba(91,124,255,0.1);
+    color: var(--blue);
+}
+.dropzone h2 { margin: 0; font-size: 16px; font-weight: 700; }
+.dropzone p { margin: 6px 0 16px; color: var(--text-secondary); font-size: 13px; }
 .file-label {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     background: white;
     color: #0a0e18;
-    padding: 10px 16px;
+    padding: 10px 18px;
     border-radius: 10px;
     font-weight: 700;
     font-size: 13px;
     cursor: pointer;
+    transition: 0.15s;
 }
-
-#fileInput {
-    display: none;
-}
-
-/* ---------- STATS ---------- */
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+.file-label:hover { filter: brightness(0.95); }
+#fileInput { display: none; }
+.import-stats {
+    display: flex;
     gap: 12px;
-    margin-bottom: 20px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
-
-.stat {
-    padding: 18px;
+.import-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
     border: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+}
+.import-stat.success { color: var(--green); border-color: rgba(52,211,153,0.2); }
+.import-stat.warning { color: var(--yellow); border-color: rgba(251,191,36,0.2); }
+.import-stat.info { color: var(--blue); border-color: rgba(91,124,255,0.2); }
+
+/* ---------- KPI CARDS ---------- */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+@media (max-width: 1024px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .kpi-grid { grid-template-columns: 1fr; } }
+.kpi-card {
     background: var(--panel);
-    border-radius: 15px;
-    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
 }
-
-.stat-label {
-    color: var(--muted);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: .08em;
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent, var(--blue)), transparent);
+    opacity: 0;
+    transition: 0.3s;
 }
-
-.stat-value {
-    margin-top: 7px;
-    font-size: 25px;
-    font-weight: 800;
-    letter-spacing: -.7px;
-}
-
-.stat.blue .stat-value {
-    color: var(--blue);
-}
-
-.stat.green .stat-value {
-    color: var(--green);
-}
-
-.stat.red .stat-value {
-    color: var(--red);
-}
-
-.stat.yellow .stat-value {
-    color: var(--yellow);
-}
-
-/* ---------- TOOLBAR ---------- */
-
-.toolbar {
+.kpi-card:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.kpi-card:hover::before { opacity: 1; }
+.kpi-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 13px;
+    margin-bottom: 10px;
+}
+.kpi-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+}
+.kpi-icon svg { width: 18px; height: 18px; }
+.kpi-value {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    line-height: 1;
+}
+.kpi-label {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 6px;
+}
+.kpi-meta {
+    color: var(--text-secondary);
+    font-size: 11px;
+    margin-top: 6px;
+    font-weight: 500;
+}
+.kpi-card.accent-blue .kpi-icon { background: rgba(91,124,255,0.12); color: var(--blue); }
+.kpi-card.accent-blue .kpi-value { color: var(--blue); }
+.kpi-card.accent-cyan .kpi-icon { background: rgba(79,209,197,0.12); color: var(--cyan); }
+.kpi-card.accent-cyan .kpi-value { color: var(--cyan); }
+.kpi-card.accent-green .kpi-icon { background: rgba(52,211,153,0.12); color: var(--green); }
+.kpi-card.accent-green .kpi-value { color: var(--green); }
+.kpi-card.accent-red .kpi-icon { background: rgba(248,113,113,0.12); color: var(--red); }
+.kpi-card.accent-red .kpi-value { color: var(--red); }
+.kpi-card.accent-yellow .kpi-icon { background: rgba(251,191,36,0.12); color: var(--yellow); }
+.kpi-card.accent-yellow .kpi-value { color: var(--yellow); }
+.kpi-card.accent-orange .kpi-icon { background: rgba(251,146,60,0.12); color: var(--orange); }
+.kpi-card.accent-orange .kpi-value { color: var(--orange); }
+
+/* ---------- SECTIONS ---------- */
+.section { margin-bottom: 28px; }
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+.section-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.section-title svg { width: 18px; height: 18px; }
+
+/* ---------- DAILY GOAL ---------- */
+.daily-goal {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 28px;
+}
+.daily-goal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+.daily-goal-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.daily-goal-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--blue);
+}
+.daily-goal-track {
+    height: 10px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+.daily-goal-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    border-radius: 5px;
+    transition: width 0.5s ease;
+}
+.daily-goal-stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.daily-goal-stat {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+.daily-goal-stat strong {
+    color: var(--text);
+    font-weight: 700;
 }
 
+/* ---------- FUNNEL ---------- */
+.funnel {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.funnel-step {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+    transition: var(--transition);
+    cursor: default;
+}
+.funnel-step:hover { background: rgba(255,255,255,0.04); border-color: var(--border-hover); }
+.funnel-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.funnel-value {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+}
+.funnel-bar {
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 6px;
+    background: rgba(255,255,255,0.05);
+    overflow: hidden;
+}
+.funnel-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    transition: width 0.5s ease;
+}
+
+/* ---------- TOOLBAR ---------- */
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
 .search {
     position: relative;
     flex: 1;
+    min-width: 220px;
 }
-
-.search span {
+.search svg {
     position: absolute;
     left: 14px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--muted);
+    color: var(--text-secondary);
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
 }
-
 .search input {
     width: 100%;
-    padding: 13px 15px 13px 40px;
+    padding: 11px 14px 11px 40px;
     border: 1px solid var(--border);
     background: var(--panel);
     color: var(--text);
     outline: none;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: inherit;
+    transition: var(--transition);
 }
-
-.search input:focus {
-    border-color: rgba(91,124,255,.6);
-    box-shadow: 0 0 0 3px rgba(91,124,255,.08);
-}
-
+.search input:focus { border-color: rgba(91,124,255,0.5); box-shadow: 0 0 0 3px rgba(91,124,255,0.08); }
+.search input::placeholder { color: var(--text-secondary); }
 .filters {
     display: flex;
-    gap: 7px;
+    gap: 6px;
+    flex-wrap: wrap;
 }
-
-.filter {
+.filter-pill {
+    padding: 8px 14px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    color: var(--text-secondary);
+    transition: var(--transition);
+    cursor: pointer;
+    white-space: nowrap;
+}
+.filter-pill:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+.filter-pill.active {
+    background: rgba(91,124,255,0.12);
+    color: var(--blue);
+    border-color: rgba(91,124,255,0.25);
+}
+.sort-select {
+    padding: 9px 12px;
+    border-radius: 9px;
     border: 1px solid var(--border);
     background: var(--panel);
-    color: var(--muted);
-    padding: 10px 12px;
-    border-radius: 10px;
+    color: var(--text);
     font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
 }
-
-.filter.active {
-    color: white;
-    border-color: rgba(91,124,255,.45);
-    background: rgba(91,124,255,.13);
-}
+.sort-select:focus { border-color: rgba(91,124,255,0.4); }
 
 /* ---------- TABLE ---------- */
-
 .table-wrap {
     border: 1px solid var(--border);
-    border-radius: 17px;
+    border-radius: var(--radius);
     overflow: hidden;
-    background: rgba(10,14,24,.76);
-    box-shadow: var(--shadow);
+    background: rgba(10,14,24,0.6);
 }
-
-.table-scroll {
-    overflow-x: auto;
-}
-
+.table-scroll { overflow-x: auto; }
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 900px;
+    min-width: 1000px;
 }
-
 thead {
-    background: rgba(255,255,255,.025);
+    background: rgba(255,255,255,0.02);
+    position: sticky;
+    top: 0;
+    z-index: 2;
 }
-
 th {
     text-align: left;
-    padding: 13px 17px;
+    padding: 14px 18px;
     color: #737e98;
     font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: .09em;
+    letter-spacing: 0.08em;
     font-weight: 700;
     border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s;
 }
-
+th:hover { color: var(--text); }
+th .sort-indicator { margin-left: 4px; opacity: 0.5; }
+th.sorted .sort-indicator { opacity: 1; color: var(--blue); }
 td {
-    padding: 14px 17px;
-    border-bottom: 1px solid rgba(255,255,255,.045);
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
     font-size: 13px;
+    vertical-align: middle;
 }
+tbody tr { transition: 0.12s ease; }
+tbody tr:hover { background: rgba(255,255,255,0.025); }
+tbody tr.selected { background: rgba(91,124,255,0.06); }
+tbody tr:last-child td { border-bottom: 0; }
 
-tbody tr {
-    transition: .15s ease;
+/* ---------- LEAD ROW ---------- */
+.lead-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
-
-tbody tr:hover {
-    background: rgba(255,255,255,.025);
+.lead-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.05);
 }
-
-tbody tr:last-child td {
-    border-bottom: 0;
-}
-
-/* ---------- LEAD ---------- */
-
-.lead-name {
-    font-weight: 750;
-    color: white;
+.lead-avatar-fallback {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    display: grid;
+    place-items: center;
+    font-weight: 700;
     font-size: 14px;
+    color: white;
+    flex-shrink: 0;
 }
-
-.lead-meta {
-    color: var(--muted);
+.lead-name {
+    font-weight: 700;
+    color: white;
+    font-size: 13px;
+    line-height: 1.3;
+}
+.lead-category {
+    color: var(--text-secondary);
     font-size: 11px;
-    margin-top: 3px;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
 }
-
-.phone {
+.rating-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--yellow);
+}
+.rating-badge svg { width: 14px; height: 14px; }
+.phone-text {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     color: #cbd4ec;
     font-size: 12px;
 }
+.priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.priority-hot { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+.priority-high { background: rgba(251,146,60,0.12); color: var(--orange); border: 1px solid rgba(251,146,60,0.2); }
+.priority-medium { background: rgba(91,124,255,0.12); color: var(--blue); border: 1px solid rgba(91,124,255,0.2); }
+.priority-low { background: rgba(255,255,255,0.05); color: var(--text-secondary); border: 1px solid var(--border); }
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.status-not-called { background: rgba(255,255,255,0.05); color: var(--text-secondary); }
+.status-called { background: rgba(91,124,255,0.12); color: var(--blue); }
+.status-interested { background: rgba(52,211,153,0.12); color: var(--green); }
+.status-not-interested { background: rgba(248,113,113,0.1); color: var(--red); }
+.status-follow-up { background: rgba(251,191,36,0.12); color: var(--yellow); }
+.status-closed-deal { background: rgba(79,209,197,0.12); color: var(--cyan); border: 1px solid rgba(79,209,197,0.2); }
 
-.call-btn {
-    border: 0;
-    border-radius: 9px;
-    padding: 8px 11px;
-    background: rgba(66,211,146,.10);
-    color: var(--green);
+/* ---------- FOOTER / PAGINATION ---------- */
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+}
+.pagination {
+    display: flex;
+    gap: 4px;
+}
+.page-btn {
+    min-width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-grid;
+    place-items: center;
+    padding: 0 8px;
+    transition: var(--transition);
+}
+.page-btn:hover:not(:disabled) { background: rgba(255,255,255,0.07); color: var(--text); }
+.page-btn.active { background: var(--blue-2); color: white; border-color: transparent; }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ---------- BULK BAR ---------- */
+.bulk-bar {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: rgba(91,124,255,0.08);
+    border: 1px solid rgba(91,124,255,0.2);
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.bulk-bar.show { display: flex; }
+.bulk-bar .btn { padding: 6px 12px; font-size: 12px; }
+
+/* ---------- MODAL ---------- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    max-width: 480px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.95) translateY(10px);
+    transition: transform 0.25s ease;
+}
+.modal-overlay.show .modal { transform: scale(1) translateY(0); }
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 0;
+}
+.modal-title { font-size: 17px; font-weight: 800; margin: 0; }
+.modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,0.04);
+    color: var(--text-secondary);
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: var(--transition);
+}
+.modal-close:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+.modal-close svg { width: 16px; height: 16px; }
+.modal-body { padding: 16px 24px 24px; }
+.modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding: 0 24px 20px;
+}
+
+/* ---------- DRAWER ---------- */
+.drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+.drawer-overlay.show { opacity: 1; pointer-events: all; }
+.drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 520px;
+    max-width: 100vw;
+    background: var(--panel-solid);
+    border-left: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    z-index: 91;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.drawer.show { transform: translateX(0); }
+.drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+.drawer-title { font-size: 15px; font-weight: 700; margin: 0; }
+.drawer-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,0.04);
+    color: var(--text-secondary);
+    cursor: pointer;
+    border: 1px solid var(--border);
+}
+.drawer-close:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+.drawer-close svg { width: 16px; height: 16px; }
+.drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+/* ---------- TOAST ---------- */
+.toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+.toast {
+    padding: 12px 18px;
+    border-radius: 10px;
+    background: var(--panel-solid);
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateX(120%);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: all;
+    max-width: 360px;
+}
+.toast.show { transform: translateX(0); opacity: 1; }
+.toast svg { width: 16px; height: 16px; flex-shrink: 0; }
+.toast-success { border-color: rgba(52,211,153,0.2); }
+.toast-success svg { color: var(--green); }
+.toast-error { border-color: rgba(248,113,113,0.2); }
+.toast-error svg { color: var(--red); }
+.toast-info { border-color: rgba(91,124,255,0.2); }
+.toast-info svg { color: var(--blue); }
+
+/* ---------- FORMS ---------- */
+.form-group { margin-bottom: 16px; }
+.form-label {
+    display: block;
     font-size: 12px;
     font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+}
+.form-input, .form-textarea, .form-select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    color: var(--text);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: var(--transition);
+}
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: rgba(91,124,255,0.5);
+    box-shadow: 0 0 0 3px rgba(91,124,255,0.08);
+}
+.form-textarea { min-height: 80px; resize: vertical; }
+.form-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b95b0' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+.form-select option { background: var(--panel-solid); color: var(--text); }
+
+/* ---------- EMPTY ---------- */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+}
+.empty-state svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+.empty-state h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 6px;
+}
+.empty-state p { font-size: 13px; margin: 0; }
+
+/* ---------- ACTIVITY TIMELINE ---------- */
+.timeline {
+    position: relative;
+    padding-left: 24px;
+}
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    background: var(--border);
+    border-radius: 1px;
+}
+.timeline-item {
+    position: relative;
+    padding-bottom: 16px;
+}
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-dot {
+    position: absolute;
+    left: -20px;
+    top: 2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: 2px solid var(--panel-solid);
+}
+.timeline-time {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+.timeline-text { font-size: 13px; color: var(--text); }
+
+/* ---------- CARDS ---------- */
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: var(--transition);
+}
+.card:hover { border-color: var(--border-hover); }
+.card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.call-btn:hover {
-    background: rgba(66,211,146,.18);
+/* ---------- LAYOUT HELPERS ---------- */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 768px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .drawer { width: 100vw; }
+    .nav-pills { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .nav-pill { font-size: 12px; padding: 7px 10px; }
 }
 
-/* ---------- STATUS ---------- */
+/* ---------- LEAD SCORE ---------- */
+.lead-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+}
+.lead-score-ring {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 9px;
+    font-weight: 800;
+}
 
+/* ---------- MOBILE BOTTOM NAV ---------- */
+.mobile-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--panel-solid);
+    border-top: 1px solid var(--border);
+    padding: 8px 0;
+    z-index: 50;
+    justify-content: space-around;
+}
+.mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 8px;
+    background: none;
+    border: 0;
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.mobile-nav-item.active { color: var(--blue); }
+.mobile-nav-item svg { width: 20px; height: 20px; }
+@media (max-width: 768px) {
+    .mobile-nav { display: flex; }
+    .header .nav-pills { display: none; }
+}
+
+/* ---------- STATUS SELECT ---------- */
 .status-select {
     appearance: none;
     border: 1px solid var(--border);
     color: white;
     background: #111827;
-    border-radius: 9px;
-    padding: 8px 28px 8px 10px;
+    border-radius: 8px;
+    padding: 7px 28px 7px 10px;
     font-size: 11px;
     font-weight: 700;
     cursor: pointer;
+    font-family: inherit;
+    outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b95b0' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    transition: var(--transition);
+}
+.status-select:focus { border-color: rgba(91,124,255,0.4); }
+
+/* ---------- MISC ---------- */
+.text-muted { color: var(--text-secondary); }
+.text-success { color: var(--green); }
+.text-danger { color: var(--red); }
+.text-warning { color: var(--yellow); }
+.mt-2 { margin-top: 8px; }
+.mt-4 { margin-top: 16px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-4 { margin-bottom: 16px; }
+.gap-2 { gap: 8px; }
+.gap-4 { gap: 16px; }
+.flex { display: flex; }
+.flex-wrap { flex-wrap: wrap; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.font-bold { font-weight: 700; }
+.text-sm { font-size: 13px; }
+.text-xs { font-size: 11px; }
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.divider {
+    height: 1px;
+    background: var(--border);
+    margin: 16px 0;
+}
+.hidden { display: none !important; }
+
+/* ---------- LEAD IMAGE ---------- */
+.lead-detail-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.03);
+}
+.lead-detail-image-fallback {
+    width: 100%;
+    height: 180px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, rgba(91,124,255,0.1), rgba(79,209,197,0.05));
+    display: grid;
+    place-items: center;
+    color: var(--text-secondary);
+    font-size: 48px;
 }
 
-.status-select.not-called {
-    color: #a9b3ca;
+/* ---------- ACTION BUTTONS IN DRAWER ---------- */
+.action-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
 }
 
-.status-select.called {
-    color: var(--blue);
-    border-color: rgba(91,124,255,.25);
+/* ---------- CONFIRMATION ---------- */
+.confirm-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin-bottom: 12px;
 }
+.confirm-icon.warning { background: rgba(251,191,36,0.12); color: var(--yellow); }
+.confirm-icon.danger { background: rgba(248,113,113,0.12); color: var(--red); }
+.confirm-icon svg { width: 24px; height: 24px; }
 
-.status-select.interested {
-    color: var(--green);
-    border-color: rgba(66,211,146,.25);
+/* ---------- ANALYTICS ---------- */
+.chart-container {
+    position: relative;
+    height: 260px;
 }
-
-.status-select.not-interested {
-    color: var(--red);
-    border-color: rgba(255,95,109,.25);
+.chart-container canvas { max-height: 260px; }
+.conversion-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
 }
-
-/* ---------- EMPTY ---------- */
-
-.empty {
-    padding: 70px 20px;
+.conversion-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
     text-align: center;
-    color: var(--muted);
 }
-
-.empty-icon {
-    font-size: 30px;
-    margin-bottom: 10px;
+.conversion-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
 }
-
-/* ---------- PAGINATION ---------- */
-
-.footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 13px 16px;
-    color: var(--muted);
+.conversion-label {
     font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-.pagination {
+/* ---------- PERIOD SELECTOR ---------- */
+.period-selector {
     display: flex;
-    gap: 6px;
-}
-
-.page-btn {
-    width: 31px;
-    height: 31px;
-    border-radius: 8px;
+    gap: 4px;
+    background: var(--panel);
     border: 1px solid var(--border);
-    background: rgba(255,255,255,.035);
-    color: var(--muted);
+    border-radius: 10px;
+    padding: 3px;
 }
-
-.page-btn.active {
-    background: var(--blue-2);
-    color: white;
-    border-color: transparent;
+.period-btn {
+    padding: 6px 14px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 0;
+    cursor: pointer;
+    transition: var(--transition);
 }
-
-/* ---------- TOAST ---------- */
-
-.toast {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    padding: 13px 17px;
-    border-radius: 12px;
-    background: #111827;
-    border: 1px solid var(--border);
-    box-shadow: 0 20px 50px rgba(0,0,0,.4);
-    color: white;
-    font-size: 13px;
-    transform: translateY(100px);
-    opacity: 0;
-    pointer-events: none;
-    transition: .25s ease;
-    z-index: 50;
-}
-
-.toast.show {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-/* ---------- RESPONSIVE ---------- */
-
-@media(max-width: 950px) {
-    .stats {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .toolbar {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .filters {
-        overflow-x: auto;
-    }
-}
-
-@media(max-width: 600px) {
-    .app {
-        padding: 15px;
-    }
-
-    .header-actions .btn {
-        padding: 9px 11px;
-        font-size: 11px;
-    }
-
-    .stats {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .dropzone {
-        padding: 22px 15px;
-    }
-}
+.period-btn:hover { color: var(--text); }
+.period-btn.active { background: rgba(91,124,255,0.15); color: var(--blue); }
 </style>
 </head>
-
 <body>
-
-<div class="app">
-
-    <!-- HEADER -->
-    <header class="header">
-        <div class="brand">
-            <div class="logo">L</div>
-
-            <div>
-                <h1>LeadFlow</h1>
-                <p>Premium Lead Calling Workspace</p>
-            </div>
-        </div>
-
-        <div class="header-actions">
-            <button class="btn" onclick="clearAllData()">
-                Clear
-            </button>
-
-            <button class="btn btn-primary" onclick="exportCSV()">
-                â†“ Export CSV
-            </button>
-        </div>
-    </header>
-
-    <!-- DROPZONE -->
-    <section class="dropzone" id="dropzone">
-
-        <div class="drop-icon">â†‘</div>
-
-        <h2>Import your leads</h2>
-
-        <p>
-            Drop a CSV or Excel file here, or select one from your computer.
-        </p>
-
-        <label class="file-label">
-            + Choose File
-            <input
-                type="file"
-                id="fileInput"
-                accept=".csv,.xlsx,.xls"
-            />
-        </label>
-
-    </section>
-
-    <!-- STATS -->
-    <section class="stats">
-
-        <div class="stat">
-            <div class="stat-label">Total Leads</div>
-            <div class="stat-value" id="totalCount">0</div>
-        </div>
-
-        <div class="stat blue">
-            <div class="stat-label">Called</div>
-            <div class="stat-value" id="calledCount">0</div>
-        </div>
-
-        <div class="stat green">
-            <div class="stat-label">Interested</div>
-            <div class="stat-value" id="interestedCount">0</div>
-        </div>
-
-        <div class="stat red">
-            <div class="stat-label">Not Interested</div>
-            <div class="stat-value" id="notInterestedCount">0</div>
-        </div>
-
-        <div class="stat yellow">
-            <div class="stat-label">Remaining</div>
-            <div class="stat-value" id="remainingCount">0</div>
-        </div>
-
-    </section>
-
-    <!-- TOOLBAR -->
-    <div class="toolbar">
-
-        <div class="search">
-            <span>âŒ•</span>
-
-            <input
-                id="searchInput"
-                type="text"
-                placeholder="Search leads by name, phone, address..."
-            />
-        </div>
-
-        <div class="filters">
-
-            <button
-                class="filter active"
-                data-filter="all"
-            >
-                All
-            </button>
-
-            <button
-                class="filter"
-                data-filter="not-called"
-            >
-                Not Called
-            </button>
-
-            <button
-                class="filter"
-                data-filter="called"
-            >
-                Called
-            </button>
-
-            <button
-                class="filter"
-                data-filter="interested"
-            >
-                Interested
-            </button>
-
-            <button
-                class="filter"
-                data-filter="not-interested"
-            >
-                Not Interested
-            </button>
-
-        </div>
-
-    </div>
-
-    <!-- TABLE -->
-    <section class="table-wrap">
-
-        <div class="table-scroll">
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Lead</th>
-                        <th>Phone</th>
-                        <th>Call</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody id="leadTable"></tbody>
-
-            </table>
-
-        </div>
-
-        <div class="footer">
-
-            <div id="resultInfo">
-                No leads loaded
-            </div>
-
-            <div class="pagination" id="pagination"></div>
-
-        </div>
-
-    </section>
-
+<div id="app"></div>
+<div class="toast-container" id="toast-container"></div>
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal"></div>
 </div>
-
-<div class="toast" id="toast"></div>
-
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<div class="drawer" id="drawer">
+    <div class="drawer-header">
+        <h3 class="drawer-title" id="drawer-title">Lead Details</h3>
+        <button class="drawer-close" onclick="App.closeDrawer()" aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+    </div>
+    <div class="drawer-body" id="drawer-body"></div>
+</div>
+<nav class="mobile-nav" id="mobile-nav">
+    <button class="mobile-nav-item active" data-page="overview" onclick="App.navigate('overview')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        <span>Overview</span>
+    </button>
+    <button class="mobile-nav-item" data-page="leads" onclick="App.navigate('leads')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Leads</span>
+    </button>
+    <button class="mobile-nav-item" data-page="analytics" onclick="App.navigate('analytics')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        <span>Analytics</span>
+    </button>
+    <button class="mobile-nav-item" data-page="followups" onclick="App.navigate('followups')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+        <span>Follow Ups</span>
+    </button>
+</nav>
 <script>
-
-let leads = [];
-let activeFilter = "all";
-let currentPage = 1;
-const pageSize = 50;
-
-
-/* =========================================================
-   STORAGE
-========================================================= */
-
-function saveData() {
-    localStorage.setItem(
-        "leadflow_leads",
-        JSON.stringify(leads)
-    );
-}
-
-function loadSavedData() {
-
-    const saved = localStorage.getItem("leadflow_leads");
-
-    if (!saved) return;
-
-    try {
-        leads = JSON.parse(saved);
-        render();
-        showToast("Previous lead list restored");
-    } catch {
-        localStorage.removeItem("leadflow_leads");
-    }
-}
-
-loadSavedData();
-
-
-/* =========================================================
-   FILE IMPORT
-========================================================= */
-
-const fileInput = document.getElementById("fileInput");
-const dropzone = document.getElementById("dropzone");
-
-fileInput.addEventListener("change", e => {
-
-    const file = e.target.files[0];
-
-    if (file) {
-        processFile(file);
-    }
-
-});
-
-dropzone.addEventListener("dragover", e => {
-    e.preventDefault();
-    dropzone.classList.add("dragover");
-});
-
-dropzone.addEventListener("dragleave", () => {
-    dropzone.classList.remove("dragover");
-});
-
-dropzone.addEventListener("drop", e => {
-
-    e.preventDefault();
-
-    dropzone.classList.remove("dragover");
-
-    const file = e.dataTransfer.files[0];
-
-    if (file) {
-        processFile(file);
-    }
-
-});
-
-
-function processFile(file) {
-
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-
-        try {
-
-            const workbook = XLSX.read(
-                e.target.result,
-                { type: "array" }
-            );
-
-            const sheet =
-                workbook.Sheets[workbook.SheetNames[0]];
-
-            const rows =
-                XLSX.utils.sheet_to_json(sheet, {
-                    defval: ""
-                });
-
-            importRows(rows);
-
-        } catch(error) {
-
-            console.error(error);
-
-            showToast(
-                "Couldn't read this file"
-            );
-        }
-    };
-
-    reader.readAsArrayBuffer(file);
-}
-
-
-/* =========================================================
-   IMPORT NORMALIZATION
-========================================================= */
-
-function importRows(rows) {
-
-    leads = rows.map((row, index) => {
-
-        const keys = Object.keys(row);
-
-        function findValue(possibleNames) {
-
-            const key = keys.find(k => {
-
-                const normalized =
-                    k.toLowerCase()
-                     .replace(/[^a-z0-9]/g, "");
-
-                return possibleNames.some(name =>
-                    normalized.includes(name)
-                );
-            });
-
-            return key ? row[key] : "";
-        }
-
-        const name =
-            findValue([
-                "name",
-                "businessname",
-                "cafename",
-                "company"
-            ]);
-
-        const phone =
-            findValue([
-                "phone",
-                "phonenumber",
-                "mobile",
-                "contact"
-            ]);
-
-        const address =
-            findValue([
-                "address",
-                "location"
-            ]);
-
-        return {
-
-            id: crypto.randomUUID(),
-
-            name:
-                String(name || "Unnamed Lead"),
-
-            phone:
-                String(phone || ""),
-
-            address:
-                String(address || ""),
-
-            status:
-                "not-called",
-
-            original:
-                row
-        };
-
-    });
-
-    saveData();
-
-    currentPage = 1;
-
-    render();
-
-    showToast(
-        `${leads.length} leads imported successfully`
-    );
-}
-
-
-/* =========================================================
-   FILTERING
-========================================================= */
-
-function getFilteredLeads() {
-
-    const query =
-        document
-            .getElementById("searchInput")
-            .value
-            .toLowerCase()
-            .trim();
-
-    return leads.filter(lead => {
-
-        const matchesFilter =
-            activeFilter === "all" ||
-            lead.status === activeFilter;
-
-        const searchable =
-            `${lead.name}
-             ${lead.phone}
-             ${lead.address}`
-             .toLowerCase();
-
-        const matchesSearch =
-            !query ||
-            searchable.includes(query);
-
-        return matchesFilter && matchesSearch;
-
-    });
-
-}
-
-
-/* =========================================================
-   RENDER
-========================================================= */
-
-function render() {
-
-    updateStats();
-
-    const filtered =
-        getFilteredLeads();
-
-    const totalPages =
-        Math.max(
-            1,
-            Math.ceil(filtered.length / pageSize)
-        );
-
-    if (currentPage > totalPages) {
-        currentPage = totalPages;
-    }
-
-    const start =
-        (currentPage - 1) * pageSize;
-
-    const pageLeads =
-        filtered.slice(
-            start,
-            start + pageSize
-        );
-
-    const tbody =
-        document.getElementById("leadTable");
-
-    tbody.innerHTML = "";
-
-    if (!pageLeads.length) {
-
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5">
-                    <div class="empty">
-                        <div class="empty-icon">â—Ž</div>
-                        <div>No leads found</div>
-                    </div>
-                </td>
-            </tr>
-        `;
-
-    } else {
-
-        pageLeads.forEach((lead, index) => {
-
-            const row =
-                document.createElement("tr");
-
-            row.innerHTML = `
-
-                <td>
-                    ${start + index + 1}
-                </td>
-
-                <td>
-                    <div class="lead-name">
-                        ${escapeHTML(lead.name)}
-                    </div>
-
-                    ${
-                        lead.address
-                        ?
-                        `<div class="lead-meta">
-                            ${escapeHTML(lead.address)}
-                        </div>`
-                        :
-                        ""
-                    }
-                </td>
-
-                <td>
-                    <div class="phone">
-                        ${escapeHTML(lead.phone)}
-                    </div>
-                </td>
-
-                <td>
-
-                    ${
-                        lead.phone
-                        ?
-                        `<button
-                            class="call-btn"
-                            onclick="callLead('${escapeAttribute(lead.phone)}')"
-                        >
-                            â˜Ž Call
-                        </button>`
-                        :
-                        `<span style="color:#555">
-                            â€”
-                        </span>`
-                    }
-
-                </td>
-
-                <td>
-
-                    <select
-                        class="status-select ${lead.status}"
-                        onchange="changeStatus(
-                            '${lead.id}',
-                            this.value
-                        )"
-                    >
-
-                        <option
-                            value="not-called"
-                            ${lead.status === "not-called" ? "selected" : ""}
-                        >
-                            Not Called
-                        </option>
-
-                        <option
-                            value="called"
-                            ${lead.status === "called" ? "selected" : ""}
-                        >
-                            Called
-                        </option>
-
-                        <option
-                            value="interested"
-                            ${lead.status === "interested" ? "selected" : ""}
-                        >
-                            Interested
-                        </option>
-
-                        <option
-                            value="not-interested"
-                            ${lead.status === "not-interested" ? "selected" : ""}
-                        >
-                            Not Interested
-                        </option>
-
-                    </select>
-
-                </td>
-            `;
-
-            tbody.appendChild(row);
-
-        });
-
-    }
-
-    document.getElementById("resultInfo").textContent =
-        `${filtered.length} lead${filtered.length === 1 ? "" : "s"} â€¢ Page ${currentPage} of ${totalPages}`;
-
-    renderPagination(totalPages);
-}
-
-
-/* =========================================================
-   STATS
-========================================================= */
-
-function updateStats() {
-
-    const total =
-        leads.length;
-
-    const called =
-        leads.filter(
-            x =>
-                x.status === "called" ||
-                x.status === "interested" ||
-                x.status === "not-interested"
-        ).length;
-
-    const interested =
-        leads.filter(
-            x => x.status === "interested"
-        ).length;
-
-    const notInterested =
-        leads.filter(
-            x => x.status === "not-interested"
-        ).length;
-
-    const remaining =
-        total - called;
-
-    document.getElementById("totalCount").textContent =
-        total;
-
-    document.getElementById("calledCount").textContent =
-        called;
-
-    document.getElementById("interestedCount").textContent =
-        interested;
-
-    document.getElementById("notInterestedCount").textContent =
-        notInterested;
-
-    document.getElementById("remainingCount").textContent =
-        remaining;
-}
-
-
-/* =========================================================
-   STATUS
-========================================================= */
-
-function changeStatus(id, status) {
-
-    const lead =
-        leads.find(x => x.id === id);
-
-    if (!lead) return;
-
-    lead.status = status;
-
-    saveData();
-
-    render();
-
-    if (status === "interested") {
-
-        showToast(
-            "ðŸ”¥ Lead marked as interested"
-        );
-
-    } else if (status === "called") {
-
-        showToast(
-            "Lead marked as called"
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   CALL
-========================================================= */
-
-function callLead(phone) {
-
-    const lead =
-        leads.find(
-            x => x.phone === phone
-        );
-
-    if (lead && lead.status === "not-called") {
-
-        lead.status = "called";
-
-        saveData();
-
-    }
-
-    window.location.href =
-        `tel:${phone}`;
-
-    render();
-
-}
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-document
-    .getElementById("searchInput")
-    .addEventListener(
-        "input",
-        () => {
-
-            currentPage = 1;
-
-            render();
-
-        }
-    );
-
-
-/* =========================================================
-   FILTER BUTTONS
-========================================================= */
-
-document
-    .querySelectorAll(".filter")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                document
-                    .querySelectorAll(".filter")
-                    .forEach(b =>
-                        b.classList.remove("active")
-                    );
-
-                button.classList.add("active");
-
-                activeFilter =
-                    button.dataset.filter;
-
-                currentPage = 1;
-
-                render();
-
+/* ============================================================
+   CONSTANTS
+   ============================================================ */
+const CRM_COLUMNS = [
+    'crm_status','call_count','last_called_at','follow_up_date',
+    'notes','deal_value','deal_closed_at','assigned_to','priority','custom_tags'
+];
+const STATUSES = ['NOT_CALLED','CALLED','INTERESTED','NOT_INTERESTED','FOLLOW_UP','CLOSED_DEAL'];
+const PRIORITIES = ['LOW','MEDIUM','HIGH','HOT'];
+const DEFAULT_SETTINGS = {
+    dailyGoal: 100,
+    defaultDealValue: 8000,
+    currency: 'INR',
+    confirmBeforeCloseDeal: true,
+    autoSave: true,
+    defaultSort: 'priority-desc'
+};
+const PAGE_SIZE = 50;
+
+/* ============================================================
+   INDEXED DB
+   ============================================================ */
+const DB_NAME = 'leadflow_db';
+const DB_VERSION = 1;
+let dbInstance = null;
+
+function openDB() {
+    return new Promise((resolve, reject) => {
+        if (dbInstance) return resolve(dbInstance);
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onerror = () => reject(req.error);
+        req.onsuccess = () => { dbInstance = req.result; resolve(dbInstance); };
+        req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains('workspace')) {
+                db.createObjectStore('workspace', { keyPath: 'id' });
             }
-        );
-
-    });
-
-
-/* =========================================================
-   PAGINATION
-========================================================= */
-
-function renderPagination(totalPages) {
-
-    const container =
-        document.getElementById("pagination");
-
-    container.innerHTML = "";
-
-    if (totalPages <= 1)
-        return;
-
-    const prev =
-        document.createElement("button");
-
-    prev.className = "page-btn";
-
-    prev.textContent = "â€¹";
-
-    prev.disabled =
-        currentPage === 1;
-
-    prev.onclick = () => {
-
-        currentPage--;
-
-        render();
-
-    };
-
-    container.appendChild(prev);
-
-
-    const maxButtons = 5;
-
-    let start =
-        Math.max(
-            1,
-            currentPage - 2
-        );
-
-    let end =
-        Math.min(
-            totalPages,
-            start + maxButtons - 1
-        );
-
-    if (end - start < maxButtons - 1) {
-
-        start =
-            Math.max(
-                1,
-                end - maxButtons + 1
-            );
-
-    }
-
-    for (
-        let i = start;
-        i <= end;
-        i++
-    ) {
-
-        const button =
-            document.createElement("button");
-
-        button.className =
-            "page-btn" +
-            (i === currentPage
-                ? " active"
-                : "");
-
-        button.textContent = i;
-
-        button.onclick = () => {
-
-            currentPage = i;
-
-            render();
-
         };
-
-        container.appendChild(button);
-
-    }
-
-
-    const next =
-        document.createElement("button");
-
-    next.className =
-        "page-btn";
-
-    next.textContent = "â€º";
-
-    next.disabled =
-        currentPage === totalPages;
-
-    next.onclick = () => {
-
-        currentPage++;
-
-        render();
-
-    };
-
-    container.appendChild(next);
-
+    });
 }
 
+async function dbGetAll(store) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, 'readonly');
+        const s = tx.objectStore(store);
+        const req = s.getAll();
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
 
-/* =========================================================
-   EXPORT
-========================================================= */
+async function dbGet(store, key) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, 'readonly');
+        const s = tx.objectStore(store);
+        const req = s.get(key);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function dbPut(store, data) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, 'readwrite');
+        const s = tx.objectStore(store);
+        const req = s.put(data);
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function dbClear(store) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, 'readwrite');
+        const s = tx.objectStore(store);
+        const req = s.clear();
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+    });
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {
+    leads: [],
+    settings: { ...DEFAULT_SETTINGS },
+    dailyActivity: {},
+    sourceColumns: [],
+    currentPage: 'overview',
+    selectedLeadIds: new Set(),
+    searchQuery: '',
+    statusFilter: 'all',
+    priorityFilter: 'all',
+    websiteFilter: 'all',
+    ratingFilter: 'all',
+    reviewsFilter: 'all',
+    sortField: 'priority-desc',
+    leadDetailId: null,
+    followupTab: 'overdue',
+    analyticsPeriod: '30d',
+    charts: {},
+    importStats: null
+};
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function escapeHTML(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function escapeAttr(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'");
+}
+
+function formatCurrency(amount, currency = 'INR') {
+    if (currency === 'INR') {
+        return '?' + Number(amount || 0).toLocaleString('en-IN');
+    }
+    return currency + ' ' + Number(amount || 0).toLocaleString();
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '—';
+    const now = new Date();
+    const diff = now - d;
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+    if (minutes < 1) return 'Just now';
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    if (days < 7) return `${days}d ago`;
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function formatFullDate(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+    });
+}
+
+function generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
+}
+
+function todayStr() {
+    return new Date().toISOString().split('T')[0];
+}
+
+function debounce(fn, delay) {
+    let timer;
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+    };
+}
+
+/* ============================================================
+   TOAST SYSTEM
+   ============================================================ */
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    const icons = {
+        success: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+        error: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+        info: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>'
+    };
+    toast.innerHTML = `${icons[type] || icons.info}<span>${escapeHTML(message)}</span>`;
+    container.appendChild(toast);
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => toast.classList.add('show'));
+    });
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 2800);
+}
+
+/* ============================================================
+   MODAL SYSTEM
+   ============================================================ */
+function showModal(contentHTML) {
+    const overlay = document.getElementById('modal-overlay');
+    const modal = document.getElementById('modal');
+    modal.innerHTML = contentHTML;
+    overlay.classList.add('show');
+    return new Promise((resolve) => {
+        overlay._resolve = resolve;
+        overlay.onclick = (e) => {
+            if (e.target === overlay) { closeModal(false); }
+        };
+    });
+}
+
+function closeModal(value) {
+    const overlay = document.getElementById('modal-overlay');
+    overlay.classList.remove('show');
+    if (overlay._resolve) { overlay._resolve(value); overlay._resolve = null; }
+}
+
+/* ============================================================
+   DRAWER SYSTEM
+   ============================================================ */
+function openDrawer(title, bodyHTML) {
+    document.getElementById('drawer-title').textContent = title;
+    document.getElementById('drawer-body').innerHTML = bodyHTML;
+    document.getElementById('drawer').classList.add('show');
+    document.getElementById('drawer-overlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDrawer() {
+    document.getElementById('drawer').classList.remove('show');
+    document.getElementById('drawer-overlay').classList.remove('show');
+    document.body.style.overflow = '';
+    state.leadDetailId = null;
+    App.render();
+}
+
+document.getElementById('drawer-overlay').addEventListener('click', closeDrawer);
+
+/* ============================================================
+   INDEXED DB PERSISTENCE
+   ============================================================ */
+async function saveToDB() {
+    try {
+        const db = await openDB();
+        const tx = db.transaction('workspace', 'readwrite');
+        const store = tx.objectStore('workspace');
+        store.put({ id: 'leads', data: state.leads });
+        store.put({ id: 'settings', data: state.settings });
+        store.put({ id: 'dailyActivity', data: state.dailyActivity });
+        store.put({ id: 'sourceColumns', data: state.sourceColumns });
+        await new Promise((resolve, reject) => {
+            tx.oncomplete = resolve;
+            tx.onerror = () => reject(tx.error);
+        });
+    } catch (e) {
+        console.error('Failed to save to IndexedDB:', e);
+        try {
+            localStorage.setItem('leadflow_leads', JSON.stringify(state.leads));
+            localStorage.setItem('leadflow_settings', JSON.stringify(state.settings));
+            localStorage.setItem('leadflow_activity', JSON.stringify(state.dailyActivity));
+        } catch (e2) {
+            console.error('localStorage fallback also failed:', e2);
+        }
+    }
+}
+
+async function loadFromDB() {
+    try {
+        const db = await openDB();
+        const tx = db.transaction('workspace', 'readonly');
+        const store = tx.objectStore('workspace');
+        const getLeads = store.get('leads');
+        const getSettings = store.get('settings');
+        const getActivity = store.get('dailyActivity');
+        const getColumns = store.get('sourceColumns');
+        await new Promise((resolve, reject) => {
+            tx.oncomplete = resolve;
+            tx.onerror = () => reject(tx.error);
+        });
+        if (getLeads.result) state.leads = getLeads.result.data;
+        if (getSettings.result) state.settings = { ...DEFAULT_SETTINGS, ...getSettings.result.data };
+        if (getActivity.result) state.dailyActivity = getActivity.result.data || {};
+        if (getColumns.result) state.sourceColumns = getColumns.result.data || [];
+    } catch (e) {
+        console.error('Failed to load from IndexedDB, trying localStorage:', e);
+        try {
+            const savedLeads = localStorage.getItem('leadflow_leads');
+            const savedSettings = localStorage.getItem('leadflow_settings');
+            const savedActivity = localStorage.getItem('leadflow_activity');
+            if (savedLeads) state.leads = JSON.parse(savedLeads);
+            if (savedSettings) state.settings = { ...DEFAULT_SETTINGS, ...JSON.parse(savedSettings) };
+            if (savedActivity) state.dailyActivity = JSON.parse(savedActivity) || {};
+        } catch (e2) {
+            console.error('localStorage fallback also failed:', e2);
+        }
+    }
+}
+
+/* ============================================================
+   DATA OPERATIONS
+   ============================================================ */
+function initLead(row, index) {
+    const lead = {
+        id: generateId(),
+        _source: { ...row },
+        crm_status: row.crm_status || 'NOT_CALLED',
+        call_count: Number(row.call_count) || 0,
+        last_called_at: row.last_called_at || null,
+        follow_up_date: row.follow_up_date || null,
+        notes: row.notes || '',
+        deal_value: row.deal_value ? Number(row.deal_value) : null,
+        deal_closed_at: row.deal_closed_at || null,
+        assigned_to: row.assigned_to || '',
+        priority: row.priority || calculatePriority(row),
+        custom_tags: row.custom_tags || '',
+        _activity: row._activity ? JSON.parse(row._activity) : [],
+        _index: index
+    };
+    if (lead.crm_status === 'CLOSED_DEAL' && !lead.deal_value) {
+        lead.deal_value = state.settings.defaultDealValue;
+    }
+    return lead;
+}
+
+function calculatePriority(row) {
+    let score = 0;
+    const rating = parseFloat(row.rating);
+    const reviews = parseInt(row.reviews) || 0;
+    const hasWebsite = !!(row.website && String(row.website).trim());
+    const hasPhone = !!(row.phone && String(row.phone).trim());
+    if (!isNaN(rating)) {
+        if (rating >= 4.5) score += 40;
+        else if (rating >= 4.0) score += 30;
+        else if (rating >= 3.5) score += 20;
+        else if (rating >= 3.0) score += 10;
+    }
+    if (reviews >= 1000) score += 30;
+    else if (reviews >= 500) score += 25;
+    else if (reviews >= 100) score += 15;
+    else if (reviews >= 10) score += 10;
+    else if (reviews > 0) score += 5;
+    if (hasWebsite) score += 15;
+    if (hasPhone) score += 10;
+    if (row.is_spending_on_ads) score += 5;
+    if (score >= 80) return 'HOT';
+    if (score >= 60) return 'HIGH';
+    if (score >= 35) return 'MEDIUM';
+    return 'LOW';
+}
+
+function calculateLeadScore(row) {
+    let score = 0;
+    const rating = parseFloat(row.rating);
+    const reviews = parseInt(row.reviews) || 0;
+    const hasWebsite = !!(row.website && String(row.website).trim());
+    const hasPhone = !!(row.phone && String(row.phone).trim());
+    const hasDescription = !!(row.description && String(row.description).trim());
+    const hasAddress = !!(row.address && String(row.address).trim());
+    const hasOwner = !!(row.owner_name && String(row.owner_name).trim());
+    if (!isNaN(rating)) score += Math.min(25, rating * 5);
+    if (reviews >= 1000) score += 25;
+    else if (reviews >= 500) score += 20;
+    else if (reviews >= 100) score += 15;
+    else if (reviews >= 10) score += 10;
+    else if (reviews > 0) score += 5;
+    if (hasWebsite) score += 15;
+    if (hasPhone) score += 15;
+    if (hasDescription) score += 5;
+    if (hasAddress) score += 5;
+    if (hasOwner) score += 5;
+    score = Math.max(0, Math.min(100, score));
+    return Math.round(score);
+}
+
+function addActivity(leadId, text) {
+    const lead = state.leads.find(l => l.id === leadId);
+    if (!lead) return;
+    if (!lead._activity) lead._activity = [];
+    lead._activity.unshift({
+        text,
+        timestamp: new Date().toISOString()
+    });
+    if (lead._activity.length > 50) lead._activity = lead._activity.slice(0, 50);
+}
+
+function getLeadDisplayName(lead) {
+    return lead._source?.name || lead.name || 'Unnamed Lead';
+}
+function getLeadCategory(lead) {
+    return lead._source?.main_category || lead._source?.categories?.split(',')[0]?.trim() || '';
+}
+function getLeadAddress(lead) {
+    return lead._source?.address || '';
+}
+function getLeadRating(lead) {
+    return lead._source?.rating;
+}
+function getLeadReviews(lead) {
+    return lead._source?.reviews;
+}
+function getLeadPhone(lead) {
+    return lead._source?.phone || '';
+}
+function getLeadWebsite(lead) {
+    return lead._source?.website || '';
+}
+function getLeadImage(lead) {
+    return lead._source?.featured_image || '';
+}
+function getLeadMapsLink(lead) {
+    return lead._source?.link || '';
+}
+function getLeadDescription(lead) {
+    return lead._source?.description || '';
+}
+function getSourceColumnNames() {
+    if (state.sourceColumns.length > 0) return state.sourceColumns;
+    if (state.leads.length > 0) {
+        const sourceKeys = Object.keys(state.leads[0]._source || {});
+        if (sourceKeys.length > 0) {
+            state.sourceColumns = sourceKeys;
+            return sourceKeys;
+        }
+    }
+    return [
+        'place_id','name','description','is_spending_on_ads','reviews','rating',
+        'competitors','website','phone','can_claim','owner_name','owner_profile_link',
+        'featured_image','main_category','categories','workday_timing','is_temporarily_closed',
+        'closed_on','address','review_keywords','link','query'
+    ];
+}
+
+/* ============================================================
+   FILTERING & SORTING
+   ============================================================ */
+function getFilteredLeads() {
+    let filtered = [...state.leads];
+    const q = state.searchQuery.toLowerCase().trim();
+    if (q) {
+        filtered = filtered.filter(lead => {
+            const searchable = [
+                getLeadDisplayName(lead),
+                getLeadPhone(lead),
+                getLeadAddress(lead),
+                getLeadCategory(lead)
+            ].join(' ').toLowerCase();
+            return searchable.includes(q);
+        });
+    }
+    if (state.statusFilter !== 'all') {
+        filtered = filtered.filter(l => l.crm_status === state.statusFilter);
+    }
+    if (state.priorityFilter !== 'all') {
+        filtered = filtered.filter(l => l.priority === state.priorityFilter);
+    }
+    if (state.websiteFilter === 'has') {
+        filtered = filtered.filter(l => getLeadWebsite(l));
+    } else if (state.websiteFilter === 'none') {
+        filtered = filtered.filter(l => !getLeadWebsite(l));
+    }
+    if (state.ratingFilter !== 'all') {
+        const minRating = parseFloat(state.ratingFilter);
+        filtered = filtered.filter(l => {
+            const r = getLeadRating(l);
+            return !isNaN(r) && r >= minRating;
+        });
+    }
+    if (state.reviewsFilter !== 'all') {
+        const minReviews = parseInt(state.reviewsFilter);
+        filtered = filtered.filter(l => {
+            const r = getLeadReviews(l);
+            return !isNaN(r) && r >= minReviews;
+        });
+    }
+    const [sortField, sortDir] = state.sortField.split('-');
+    filtered.sort((a, b) => {
+        let valA, valB;
+        switch (sortField) {
+            case 'name': valA = getLeadDisplayName(a).toLowerCase(); valB = getLeadDisplayName(b).toLowerCase(); break;
+            case 'rating': valA = getLeadRating(a) || 0; valB = getLeadRating(b) || 0; break;
+            case 'reviews': valA = getLeadReviews(a) || 0; valB = getLeadReviews(b) || 0; break;
+            case 'priority': valA = PRIORITIES.indexOf(a.priority); valB = PRIORITIES.indexOf(b.priority); break;
+            case 'status': valA = STATUSES.indexOf(a.crm_status); valB = STATUSES.indexOf(b.crm_status); break;
+            case 'lastCalled': valA = a.last_called_at ? new Date(a.last_called_at).getTime() : 0; valB = b.last_called_at ? new Date(b.last_called_at).getTime() : 0; break;
+            case 'callCount': valA = a.call_count; valB = b.call_count; break;
+            case 'dealValue': valA = a.deal_value || 0; valB = b.deal_value || 0; break;
+            default: valA = 0; valB = 0;
+        }
+        if (typeof valA === 'string') {
+            return sortDir === 'desc' ? valB.localeCompare(valA) : valA.localeCompare(valB);
+        }
+        return sortDir === 'desc' ? valB - valA : valA - valB;
+    });
+    return filtered;
+}
+
+/* ============================================================
+   ANALYTICS HELPERS
+   ============================================================ */
+function getAnalytics() {
+    const leads = state.leads;
+    const total = leads.length;
+    const called = leads.filter(l => ['CALLED','INTERESTED','NOT_INTERESTED','FOLLOW_UP','CLOSED_DEAL'].includes(l.crm_status)).length;
+    const interested = leads.filter(l => l.crm_status === 'INTERESTED').length;
+    const notInterested = leads.filter(l => l.crm_status === 'NOT_INTERESTED').length;
+    const followUps = leads.filter(l => l.crm_status === 'FOLLOW_UP').length;
+    const closedDeals = leads.filter(l => l.crm_status === 'CLOSED_DEAL').length;
+    const totalRevenue = leads.filter(l => l.crm_status === 'CLOSED_DEAL').reduce((sum, l) => sum + (l.deal_value || state.settings.defaultDealValue), 0);
+    const avgDealValue = closedDeals > 0 ? totalRevenue / closedDeals : 0;
+    const callRate = total > 0 ? (called / total * 100) : 0;
+    const interestRate = called > 0 ? (interested / called * 100) : 0;
+    const followUpRate = called > 0 ? (followUps / called * 100) : 0;
+    const closeRate = called > 0 ? (closedDeals / called * 100) : 0;
+    const leadToDealRate = total > 0 ? (closedDeals / total * 100) : 0;
+    const revenuePerCall = called > 0 ? totalRevenue / called : 0;
+    const totalCalls = leads.reduce((sum, l) => sum + (l.call_count || 0), 0);
+    return {
+        total, called, interested, notInterested, followUps, closedDeals,
+        totalRevenue, avgDealValue, callRate, interestRate, followUpRate, closeRate,
+        leadToDealRate, revenuePerCall, totalCalls
+    };
+}
+
+function getDailyAnalytics() {
+    const activity = state.dailyActivity || {};
+    const days = Object.keys(activity).sort().reverse();
+    const period = state.analyticsPeriod;
+    let filteredDays = days;
+    if (period === '7d') filteredDays = days.slice(0, 7);
+    else if (period === '30d') filteredDays = days.slice(0, 30);
+    else if (period === '90d') filteredDays = days.slice(0, 90);
+    return filteredDays.map(day => ({
+        date: day,
+        ...activity[day]
+    }));
+}
+
+function getTodayStats() {
+    const today = todayStr();
+    const activity = state.dailyActivity[today] || { calls: 0, interested: 0, notInterested: 0, followUps: 0, closedDeals: 0, revenue: 0 };
+    return activity;
+}
+
+function recordDailyActivity(status, dealValue = 0) {
+    const today = todayStr();
+    if (!state.dailyActivity[today]) {
+        state.dailyActivity[today] = { calls: 0, interested: 0, notInterested: 0, followUps: 0, closedDeals: 0, revenue: 0 };
+    }
+    const day = state.dailyActivity[today];
+    switch (status) {
+        case 'CALLED': day.calls++; break;
+        case 'INTERESTED': day.interested++; break;
+        case 'NOT_INTERESTED': day.notInterested++; break;
+        case 'FOLLOW_UP': day.followUps++; break;
+        case 'CLOSED_DEAL':
+            day.closedDeals++;
+            day.revenue += Number(dealValue) || 0;
+            break;
+    }
+}
+
+/* ============================================================
+   IMPORT / EXPORT
+   ============================================================ */
+function getExportData() {
+    const sourceCols = getSourceColumnNames();
+    return state.leads.map(lead => {
+        const row = {};
+        for (const col of sourceCols) {
+            row[col] = lead._source?.[col] ?? '';
+        }
+        for (const col of CRM_COLUMNS) {
+            let val = lead[col];
+            if (col === '_activity' || col === '_index' || col === '_source') continue;
+            if (col === 'deal_value' && val) val = Number(val);
+            if (col === 'call_count') val = Number(val) || 0;
+            row[col] = val ?? '';
+        }
+        return row;
+    });
+}
 
 function exportCSV() {
-
-    if (!leads.length) {
-
-        showToast(
-            "No leads to export"
-        );
-
+    if (!state.leads.length) {
+        showToast('No leads to export', 'error');
         return;
-
     }
-
-    const data =
-        leads.map(lead => ({
-
-            Name:
-                lead.name,
-
-            Phone:
-                lead.phone,
-
-            Address:
-                lead.address,
-
-            Status:
-                formatStatus(lead.status)
-
-        }));
-
-    const worksheet =
-        XLSX.utils.json_to_sheet(data);
-
-    const workbook =
-        XLSX.utils.book_new();
-
-    XLSX.utils.book_append_sheet(
-        workbook,
-        worksheet,
-        "Leads"
-    );
-
-    XLSX.writeFile(
-        workbook,
-        "leadflow-updated-leads.xlsx"
-    );
-
-    showToast(
-        "Lead list exported"
-    );
-
+    const data = getExportData();
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Leads');
+    const date = new Date().toISOString().split('T')[0];
+    XLSX.writeFile(wb, `leadflow_export_${date}.xlsx`);
+    showToast('CSV exported successfully', 'success');
 }
 
-
-/* =========================================================
-   CLEAR
-========================================================= */
-
-function clearAllData() {
-
-    if (!leads.length)
-        return;
-
-    const confirmed =
-        confirm(
-            "Clear all imported leads and saved progress?"
-        );
-
-    if (!confirmed)
-        return;
-
-    leads = [];
-
-    localStorage.removeItem(
-        "leadflow_leads"
-    );
-
-    render();
-
-    showToast(
-        "All lead data cleared"
-    );
-
+function parseFile(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const workbook = XLSX.read(e.target.result, { type: 'array' });
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+                resolve(rows);
+            } catch (error) {
+                reject(error);
+            }
+        };
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsArrayBuffer(file);
+    });
 }
 
+function processImportRows(rows, merge = false) {
+    const stats = { total: rows.length, valid: 0, missingPhone: 0, missingName: 0, duplicates: 0 };
+    const newLeads = [];
+    const existingPlaceIds = new Set(state.leads.map(l => l._source?.place_id).filter(Boolean));
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const placeId = String(row.place_id || '').trim();
+        const name = String(row.name || '').trim();
+        const phone = String(row.phone || '').trim();
+        if (!placeId && !name) { stats.missingName++; continue; }
+        if (!phone) stats.missingPhone++;
+        if (placeId && existingPlaceIds.has(placeId)) {
+            stats.duplicates++;
+            if (!merge) continue;
+        }
+        const lead = initLead(row, i);
+        newLeads.push(lead);
+        if (placeId) existingPlaceIds.add(placeId);
+        stats.valid++;
+    }
+    return { newLeads, stats };
+}
 
-/* =========================================================
-   HELPERS
-========================================================= */
+async function handleFileImport(file, merge = false) {
+    try {
+        showToast('Importing file...', 'info');
+        const rows = await parseFile(file);
+        if (!rows.length) {
+            showToast('No data found in file', 'error');
+            return;
+        }
+        if (rows.length > 0) {
+            state.sourceColumns = Object.keys(rows[0]);
+        }
+        const { newLeads, stats } = processImportRows(rows, merge);
+        if (newLeads.length === 0 && !merge) {
+            showToast('No new leads to import (all duplicates)', 'error');
+            return;
+        }
+        state.leads = merge ? [...state.leads, ...newLeads] : newLeads;
+        state.importStats = stats;
+        await saveToDB();
+        App.render();
+        showToast(`${stats.valid} leads imported successfully`, 'success');
+    } catch (error) {
+        console.error('Import error:', error);
+        showToast('Failed to import file: ' + error.message, 'error');
+    }
+}
 
-function formatStatus(status) {
+/* ============================================================
+   CALL TRACKING
+   ============================================================ */
+function logCall(leadId) {
+    const lead = state.leads.find(l => l.id === leadId);
+    if (!lead) return;
+    const prevStatus = lead.crm_status;
+    if (prevStatus === 'NOT_CALLED') {
+        lead.crm_status = 'CALLED';
+    }
+    lead.call_count = (lead.call_count || 0) + 1;
+    lead.last_called_at = new Date().toISOString();
+    recordDailyActivity('CALLED');
+    addActivity(leadId, 'Called lead');
+    saveToDB().then(() => App.render());
+    showToast('Call logged', 'success');
+}
 
-    const names = {
+/* ============================================================
+   STATUS MANAGEMENT
+   ============================================================ */
+function changeLeadStatus(leadId, newStatus) {
+    const lead = state.leads.find(l => l.id === leadId);
+    if (!lead || lead.crm_status === newStatus) return;
+    const oldStatus = lead.crm_status;
+    lead.crm_status = newStatus;
+    if (newStatus === 'CLOSED_DEAL') {
+        if (!lead.deal_value) {
+            lead.deal_value = state.settings.defaultDealValue;
+        }
+        lead.deal_closed_at = new Date().toISOString();
+        recordDailyActivity('CLOSED_DEAL', lead.deal_value);
+        addActivity(leadId, `Deal closed — ${formatCurrency(lead.deal_value)}`);
+    } else if (newStatus === 'INTERESTED') {
+        recordDailyActivity('INTERESTED');
+        addActivity(leadId, 'Marked as interested');
+    } else if (newStatus === 'NOT_INTERESTED') {
+        recordDailyActivity('NOT_INTERESTED');
+        addActivity(leadId, 'Marked as not interested');
+    } else if (newStatus === 'FOLLOW_UP') {
+        recordDailyActivity('FOLLOW_UP');
+        addActivity(leadId, 'Follow-up scheduled');
+    } else if (newStatus === 'CALLED') {
+        recordDailyActivity('CALLED');
+        addActivity(leadId, 'Status changed to Called');
+    }
+    saveToDB().then(() => {
+        App.render();
+        if (newStatus === 'CLOSED_DEAL') {
+            showToast(`Deal closed — ${formatCurrency(lead.deal_value)}`, 'success');
+        } else if (newStatus === 'INTERESTED') {
+            showToast('Lead marked as interested', 'success');
+        } else if (newStatus === 'NOT_INTERESTED') {
+            showToast('Lead marked as not interested', 'info');
+        } else if (newStatus === 'FOLLOW_UP') {
+            showToast('Follow-up scheduled', 'success');
+        }
+    });
+}
 
-        "not-called":
-            "Not Called",
+async function closeDeal(leadId, dealValue) {
+    const lead = state.leads.find(l => l.id === leadId);
+    if (!lead) return;
+    lead.crm_status = 'CLOSED_DEAL';
+    lead.deal_value = dealValue;
+    lead.deal_closed_at = new Date().toISOString();
+    recordDailyActivity('CLOSED_DEAL', dealValue);
+    addActivity(leadId, `Deal closed — ${formatCurrency(dealValue)}`);
+    await saveToDB();
+    App.render();
+    showToast(`Deal closed — ${formatCurrency(dealValue)}`, 'success');
+}
 
-        "called":
-            "Called",
+function updateLeadField(leadId, field, value) {
+    const lead = state.leads.find(l => l.id === leadId);
+    if (!lead) return;
+    lead[field] = value;
+    saveToDB().then(() => App.render());
+}
 
-        "interested":
-            "Interested",
+function updateLeadFields(leadId, updates) {
+    const lead = state.leads.find(l => l.id === leadId);
+    if (!lead) return;
+    Object.assign(lead, updates);
+    saveToDB().then(() => App.render());
+}
 
-        "not-interested":
-            "Not Interested"
+/* ============================================================
+   PRIORITY
+   ============================================================ */
+function setPriority(leadId, priority) {
+    updateLeadField(leadId, 'priority', priority);
+}
 
+/* ============================================================
+   FOLLOW UPS
+   ============================================================ */
+function getFollowups() {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const followUps = state.leads.filter(l => l.crm_status === 'FOLLOW_UP' && l.follow_up_date);
+    return {
+        overdue: followUps.filter(l => new Date(l.follow_up_date) < today).sort((a, b) => new Date(a.follow_up_date) - new Date(b.follow_up_date)),
+        today: followUps.filter(l => {
+            const d = new Date(l.follow_up_date);
+            return d >= today && d < tomorrow;
+        }).sort((a, b) => new Date(a.follow_up_date) - new Date(b.follow_up_date)),
+        upcoming: followUps.filter(l => new Date(l.follow_up_date) >= tomorrow).sort((a, b) => new Date(a.follow_up_date) - new Date(b.follow_up_date))
+    };
+}
+
+function scheduleFollowup(leadId, dateStr) {
+    updateLeadField(leadId, 'follow_up_date', dateStr);
+    addActivity(leadId, `Follow-up scheduled for ${new Date(dateStr).toLocaleDateString()}`);
+    showToast('Follow-up scheduled', 'success');
+}
+
+/* ============================================================
+   BULK ACTIONS
+   ============================================================ */
+function bulkUpdateStatus(status) {
+    let count = 0;
+    for (const id of state.selectedLeadIds) {
+        const lead = state.leads.find(l => l.id === id);
+        if (lead && lead.crm_status !== status) {
+            lead.crm_status = status;
+            if (status === 'CLOSED_DEAL') {
+                if (!lead.deal_value) lead.deal_value = state.settings.defaultDealValue;
+                lead.deal_closed_at = new Date().toISOString();
+                recordDailyActivity('CLOSED_DEAL', lead.deal_value);
+            }
+            count++;
+        }
+    }
+    state.selectedLeadIds.clear();
+    saveToDB().then(() => App.render());
+    showToast(`${count} leads updated`, 'success');
+}
+
+function bulkSetPriority(priority) {
+    let count = 0;
+    for (const id of state.selectedLeadIds) {
+        const lead = state.leads.find(l => l.id === id);
+        if (lead) { lead.priority = priority; count++; }
+    }
+    state.selectedLeadIds.clear();
+    saveToDB().then(() => App.render());
+    showToast(`${count} leads set to ${priority}`, 'success');
+}
+
+function bulkClearCRM() {
+    let count = 0;
+    for (const id of state.selectedLeadIds) {
+        const lead = state.leads.find(l => l.id === id);
+        if (lead) {
+            lead.crm_status = 'NOT_CALLED';
+            lead.call_count = 0;
+            lead.last_called_at = null;
+            lead.follow_up_date = null;
+            lead.notes = '';
+            lead.deal_value = null;
+            lead.deal_closed_at = null;
+            lead.priority = calculatePriority(lead._source || {});
+            lead.custom_tags = '';
+            lead._activity = [];
+            count++;
+        }
+    }
+    state.selectedLeadIds.clear();
+    saveToDB().then(() => App.render());
+    showToast(`CRM data cleared for ${count} leads`, 'success');
+}
+
+function bulkDeleteSelected() {
+    const count = state.selectedLeadIds.size;
+    if (!count) return;
+    state.leads = state.leads.filter(l => !state.selectedLeadIds.has(l.id));
+    state.selectedLeadIds.clear();
+    saveToDB().then(() => App.render());
+    showToast(`${count} leads deleted`, 'success');
+}
+
+function exportSelectedLeads() {
+    if (!state.selectedLeadIds.size) {
+        showToast('No leads selected', 'error');
+        return;
+    }
+    const selected = state.leads.filter(l => state.selectedLeadIds.has(l.id));
+    const sourceCols = getSourceColumnNames();
+    const data = selected.map(lead => {
+        const row = {};
+        for (const col of sourceCols) row[col] = lead._source?.[col] ?? '';
+        for (const col of CRM_COLUMNS) {
+            if (col === '_activity' || col === '_index' || col === '_source') continue;
+            row[col] = lead[col] ?? '';
+        }
+        return row;
+    });
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Selected');
+    const date = new Date().toISOString().split('T')[0];
+    XLSX.writeFile(wb, `leadflow_selected_${date}.xlsx`);
+    showToast('Selected leads exported', 'success');
+}
+
+/* ============================================================
+   SVG HELPERS
+   ============================================================ */
+function svgIcon(name, size = 16) {
+    const icons = {
+        phone: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13 1 .37 2 .7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.81.33 1.81.57 2.81.7a2 2 0 0 1 1.72 2z"/></svg>',
+        map: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
+        globe: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
+        star: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+        users: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+        target: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+        trending: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+        calendar: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>',
+        clock: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+        check: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+        x: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+        search: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+        filter: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>',
+        download: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>',
+        upload: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>',
+        settings: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>',
+        external: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>',
+        building: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>',
+        wallet: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>',
+        flame: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
+        activity: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+        barChart: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>',
+        trash: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>',
+        mail: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+        rupee: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><line x1="12" x2="12" y1="18" y2="18.01"/></svg>',
+        zap: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+        inbox: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>',
+        alert: '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>'
+    };
+    return icons[name] || '';
+}
+
+/* ============================================================
+   RENDER HELPERS
+   ============================================================ */
+function statusLabel(status) {
+    return status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function statusClass(status) {
+    return status.toLowerCase().replace(/_/g, '-');
+}
+
+function priorityClass(priority) {
+    return priority ? priority.toLowerCase() : 'medium';
+}
+
+function renderKPI(label, value, accent, icon, meta = '') {
+    return `
+        <div class="kpi-card accent-${accent}">
+            <div class="kpi-header">
+                <div class="kpi-icon">${icon}</div>
+            </div>
+            <div class="kpi-value">${value}</div>
+            <div class="kpi-label">${label}</div>
+            ${meta ? `<div class="kpi-meta">${meta}</div>` : ''}
+        </div>
+    `;
+}
+
+function renderEmptyState(icon, title, message, action = null) {
+    return `
+        <div class="empty-state">
+            ${icon}
+            <h3>${title}</h3>
+            <p>${message}</p>
+            ${action ? `<button class="btn btn-primary mt-4" onclick="${action}">Get Started</button>` : ''}
+        </div>
+    `;
+}
+
+/* ============================================================
+   PAGE RENDERERS
+   ============================================================ */
+function renderHeader() {
+    const pages = [
+        { id: 'overview', label: 'Overview', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>' },
+        { id: 'leads', label: 'Leads', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' },
+        { id: 'analytics', label: 'Analytics', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>' },
+        { id: 'followups', label: 'Follow Ups', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>' }
+    ];
+    return `
+        <header class="header">
+            <div class="brand">
+                <div class="logo">LF</div>
+                <div>
+                    <h1>LeadFlow</h1>
+                    <p>Premium Lead Calling Workspace</p>
+                </div>
+            </div>
+            <nav class="nav-pills">
+                ${pages.map(p => `<button class="nav-pill ${state.currentPage === p.id ? 'active' : ''}" onclick="App.navigate('${p.id}')">${p.icon} ${p.label}</button>`).join('')}
+            </nav>
+            <div class="header-actions">
+                <button class="btn btn-icon" onclick="App.navigate('settings')" title="Settings">${svgIcon('settings')}</button>
+                <button class="btn" onclick="App.showClearConfirm()">${svgIcon('trash')} Clear</button>
+                <button class="btn btn-primary" onclick="exportCSV()">${svgIcon('download')} Export</button>
+            </div>
+        </header>
+    `;
+}
+
+function renderOverview() {
+    const analytics = getAnalytics();
+    const todayStats = getTodayStats();
+    const todayCalls = todayStats.calls;
+    const goalProgress = Math.min(100, (todayCalls / state.settings.dailyGoal) * 100);
+    const remaining = Math.max(0, state.settings.dailyGoal - todayCalls);
+    const recentLeads = state.leads.slice().sort((a, b) => {
+        const ta = a._activity?.[0]?.timestamp ? new Date(a._activity[0].timestamp).getTime() : 0;
+        const tb = b._activity?.[0]?.timestamp ? new Date(b._activity[0].timestamp).getTime() : 0;
+        return tb - ta;
+    }).slice(0, 5);
+    const nextFollowup = getFollowups();
+    const upcoming = [...nextFollowup.overdue, ...nextFollowup.today, ...nextFollowup.upcoming].slice(0, 5);
+    return `
+        ${renderHeader()}
+        <div class="app">
+            <!-- Import Section -->
+            <section class="dropzone" id="dropzone">
+                <div class="drop-icon">${svgIcon('upload', 24)}</div>
+                <h2>Import your leads</h2>
+                <p>Drop a CSV or Excel file here, or select one from your computer.</p>
+                <label class="file-label">
+                    ${svgIcon('upload', 16)} Choose File
+                    <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" onchange="handleFileSelect(event)" />
+                </label>
+                ${state.importStats ? `
+                <div class="import-stats">
+                    <div class="import-stat success">${svgIcon('check', 14)} ${state.importStats.valid} imported</div>
+                    ${state.importStats.missingPhone ? `<div class="import-stat warning">${svgIcon('alert', 14)} ${state.importStats.missingPhone} missing phone</div>` : ''}
+                    ${state.importStats.duplicates ? `<div class="import-stat info">${svgIcon('activity', 14)} ${state.importStats.duplicates} duplicates</div>` : ''}
+                </div>` : ''}
+            </section>
+
+            <!-- Daily Goal -->
+            <div class="daily-goal">
+                <div class="daily-goal-header">
+                    <div class="daily-goal-title">${svgIcon('target', 14)} TODAY'S OUTREACH</div>
+                    <div class="daily-goal-value">${todayCalls} / ${state.settings.dailyGoal}</div>
+                </div>
+                <div class="daily-goal-track">
+                    <div class="daily-goal-fill" style="width: ${goalProgress}%"></div>
+                </div>
+                <div class="daily-goal-stats">
+                    <div class="daily-goal-stat"><strong>${remaining}</strong> remaining</div>
+                    <div class="daily-goal-stat"><strong>${todayStats.interested}</strong> interested</div>
+                    <div class="daily-goal-stat"><strong>${todayStats.closedDeals}</strong> deals closed</div>
+                    <div class="daily-goal-stat"><strong>${formatCurrency(todayStats.revenue)}</strong> revenue today</div>
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                ${renderKPI('Total Leads', analytics.total.toLocaleString(), 'blue', svgIcon('users', 20), `${state.leads.length} leads loaded`)}
+                ${renderKPI('Called', analytics.called.toLocaleString(), 'cyan', svgIcon('phone', 20), `${analytics.callRate.toFixed(1)}% call rate`)}
+                ${renderKPI('Remaining', (analytics.total - analytics.called).toLocaleString(), 'yellow', svgIcon('inbox', 20), `${analytics.total - analytics.called} not yet contacted`)}
+                ${renderKPI('Interested', analytics.interested.toLocaleString(), 'green', svgIcon('flame', 20), `${analytics.interestRate.toFixed(1)}% interest rate`)}
+                ${renderKPI('Not Interested', analytics.notInterested.toLocaleString(), 'red', svgIcon('x', 20), `${analytics.notInterested} declined`)}
+                ${renderKPI('Follow Ups', analytics.followUps.toLocaleString(), 'orange', svgIcon('calendar', 20), `${nextFollowup.today.length} today`)}
+                ${renderKPI('Closed Deals', analytics.closedDeals.toLocaleString(), 'green', svgIcon('check', 20), `${analytics.closeRate.toFixed(1)}% close rate`)}
+                ${renderKPI('Revenue', formatCurrency(analytics.totalRevenue), 'cyan', svgIcon('rupee', 20), `${formatCurrency(analytics.avgDealValue)} avg`)}
+            </div>
+
+            <!-- Two Column Layout -->
+            <div class="grid-2">
+                <!-- Funnel -->
+                <div class="card">
+                    <div class="card-title">${svgIcon('trending', 14)} Funnel</div>
+                    <div class="funnel">
+                        ${[
+                            { label: 'Total Leads', value: analytics.total, color: 'var(--blue)' },
+                            { label: 'Called', value: analytics.called, color: 'var(--cyan)' },
+                            { label: 'Interested', value: analytics.interested, color: 'var(--green)' },
+                            { label: 'Follow Ups', value: analytics.followUps, color: 'var(--yellow)' },
+                            { label: 'Closed Deals', value: analytics.closedDeals, color: 'var(--cyan)' }
+                        ].map(step => {
+                            const pct = analytics.total > 0 ? (step.value / analytics.total * 100) : 0;
+                            return `
+                                <div class="funnel-step">
+                                    <div>
+                                        <div class="funnel-label">${step.label}</div>
+                                        <div class="funnel-bar"><div class="funnel-bar-fill" style="width: ${pct}%; background: ${step.color}"></div></div>
+                                    </div>
+                                    <div class="funnel-value">${step.value.toLocaleString()}</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    ${analytics.totalRevenue > 0 ? `<div style="text-align:center;padding:12px 0 0;font-size:13px;font-weight:700;color:var(--cyan)">${formatCurrency(analytics.totalRevenue)} Revenue</div>` : ''}
+                </div>
+
+                <!-- Quick Actions & Recent -->
+                <div style="display:flex;flex-direction:column;gap:16px">
+                    <div class="card">
+                        <div class="card-title">${svgIcon('zap', 14)} Quick Actions</div>
+                        <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:8px" onclick="App.callNextLead()">${svgIcon('phone', 16)} Call Next Lead</button>
+                        <button class="btn" style="width:100%;justify-content:center" onclick="App.navigate('leads')">${svgIcon('users', 16)} View All Leads</button>
+                    </div>
+                    ${upcoming.length ? `
+                    <div class="card">
+                        <div class="card-title">${svgIcon('clock', 14)} Upcoming Follow-ups</div>
+                        ${upcoming.map(l => `
+                            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="App.openLead('${l.id}')">
+                                <div>
+                                    <div style="font-size:13px;font-weight:600;color:var(--text)">${escapeHTML(getLeadDisplayName(l))}</div>
+                                    <div style="font-size:11px;color:var(--text-secondary)">${formatDate(l.follow_up_date)}</div>
+                                </div>
+                                <span class="status-pill status-follow-up">Follow Up</span>
+                            </div>
+                        `).join('')}
+                    </div>` : ''}
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card" style="margin-top:16px">
+                <div class="card-title">${svgIcon('activity', 14)} Recent Activity</div>
+                <div class="timeline">
+                    ${(() => {
+                        const activities = [];
+                        for (const lead of state.leads) {
+                            if (lead._activity) {
+                                for (const act of lead._activity.slice(0, 3)) {
+                                    activities.push({ ...act, leadId: lead.id, leadName: getLeadDisplayName(lead) });
+                                }
+                            }
+                        }
+                        activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                        return activities.slice(0, 8).map(act => `
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-time">${formatDate(act.timestamp)}</div>
+                                <div class="timeline-text">${escapeHTML(act.leadName)} — ${escapeHTML(act.text)}</div>
+                            </div>
+                        `).join('') || '<div style="color:var(--text-secondary);font-size:13px">No activity yet. Start calling leads!</div>';
+                    })()}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderLeadsPage() {
+    const filtered = getFilteredLeads();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    const page = Math.min(state.currentPageNum || 1, totalPages);
+    const start = (page - 1) * PAGE_SIZE;
+    const pageLeads = filtered.slice(start, start + PAGE_SIZE);
+    const sortField = state.sortField;
+    return `
+        ${renderHeader()}
+        <div class="app">
+            <!-- Import Dropzone (collapsible) -->
+            <details style="margin-bottom:16px">
+                <summary style="cursor:pointer;color:var(--text-secondary);font-size:13px;font-weight:600;padding:8px 0">${svgIcon('upload', 14)} Import / Re-import CSV</summary>
+                <div class="dropzone" style="margin-top:12px" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="event.preventDefault();this.classList.remove('dragover');handleDrop(event)">
+                    <div class="drop-icon">${svgIcon('upload', 24)}</div>
+                    <h2>Import leads</h2>
+                    <p>Drop CSV or Excel here.</p>
+                    <label class="file-label">
+                        ${svgIcon('upload', 16)} Choose File
+                        <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFileSelect(event)" />
+                    </label>
+                    <p style="margin-top:12px;font-size:12px;color:var(--text-secondary)">Choose: <button class="btn btn-xs" onclick="showImportOptions()">Replace Workspace</button> <button class="btn btn-xs" onclick="showImportOptions(true)">Merge</button></p>
+                </div>
+            </details>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="search">
+                    ${svgIcon('search', 16)}
+                    <input type="text" id="searchInput" placeholder="Search leads..." value="${escapeHTML(state.searchQuery)}" oninput="App.onSearch(this.value)" />
+                </div>
+                <div class="filters">
+                    ${['all','NOT_CALLED','CALLED','INTERESTED','NOT_INTERESTED','FOLLOW_UP','CLOSED_DEAL'].map(f => `
+                        <button class="filter-pill ${state.statusFilter === f ? 'active' : ''}" onclick="App.setStatusFilter('${f}')">${f === 'all' ? 'All' : statusLabel(f)}</button>
+                    `).join('')}
+                </div>
+                <div class="filters">
+                    <button class="filter-pill ${state.priorityFilter === 'HIGH' ? 'active' : ''}" onclick="App.setPriorityFilter('HIGH')">High</button>
+                    <button class="filter-pill ${state.priorityFilter === 'MEDIUM' ? 'active' : ''}" onclick="App.setPriorityFilter('MEDIUM')">Medium</button>
+                    <button class="filter-pill ${state.priorityFilter === 'LOW' ? 'active' : ''}" onclick="App.setPriorityFilter('LOW')">Low</button>
+                    <button class="filter-pill ${state.priorityFilter === 'HOT' ? 'active' : ''}" onclick="App.setPriorityFilter('HOT')">Hot</button>
+                </div>
+                <div class="filters">
+                    <button class="filter-pill ${state.websiteFilter === 'has' ? 'active' : ''}" onclick="App.setWebsiteFilter('has')">Has Website</button>
+                    <button class="filter-pill ${state.websiteFilter === 'none' ? 'active' : ''}" onclick="App.setWebsiteFilter('none')">No Website</button>
+                </div>
+                <select class="sort-select" onchange="App.setSort(this.value)">
+                    ${[
+                        ['priority-desc','Priority (High to Low)'],
+                        ['priority-asc','Priority (Low to High)'],
+                        ['name-asc','Name (A-Z)'],
+                        ['name-desc','Name (Z-A)'],
+                        ['rating-desc','Rating (High to Low)'],
+                        ['reviews-desc','Reviews (High to Low)'],
+                        ['callCount-desc','Most Calls'],
+                        ['dealValue-desc','Deal Value (High to Low)'],
+                        ['lastCalled-desc','Last Called (Recent)']
+                    ].map(([val, label]) => `<option value="${val}" ${state.sortField === val ? 'selected' : ''}>${label}</option>`).join('')}
+                </select>
+            </div>
+
+            <!-- Bulk Bar -->
+            ${state.selectedLeadIds.size > 0 ? `
+            <div class="bulk-bar show">
+                <span>${state.selectedLeadIds.size} selected</span>
+                <button class="btn btn-xs" onclick="bulkUpdateStatus('CALLED')">Mark Called</button>
+                <button class="btn btn-xs" onclick="bulkUpdateStatus('INTERESTED')">Mark Interested</button>
+                <button class="btn btn-xs" onclick="bulkUpdateStatus('FOLLOW_UP')">Follow Up</button>
+                <button class="btn btn-xs" onclick="bulkUpdateStatus('NOT_INTERESTED')">Not Interested</button>
+                <button class="btn btn-xs" onclick="bulkSetPriority('HOT')">HOT</button>
+                <button class="btn btn-xs" onclick="bulkSetPriority('HIGH')">HIGH</button>
+                <button class="btn btn-xs" onclick="bulkClearCRM()">Clear CRM</button>
+                <button class="btn btn-xs btn-danger" onclick="bulkDeleteSelected()">Delete</button>
+                <button class="btn btn-xs" onclick="exportSelectedLeads()">Export Selected</button>
+                <button class="btn btn-xs" onclick="state.selectedLeadIds.clear();App.render()">Cancel</button>
+            </div>` : ''}
+
+            <!-- Table -->
+            <div class="table-wrap">
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:40px"><input type="checkbox" onchange="App.toggleSelectAll(this.checked)" /></th>
+                                <th>Lead</th>
+                                <th>Category</th>
+                                <th>Rating</th>
+                                <th>Reviews</th>
+                                <th>Phone</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Last Called</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leadTable">
+                            ${pageLeads.length === 0 ? `
+                                <tr><td colspan="10">
+                                    ${state.leads.length === 0 ? renderEmptyState(svgIcon('inbox', 48), 'No leads imported', 'Import a CSV file to get started', "App.navigate('overview')") : renderEmptyState(svgIcon('search', 48), 'No results', 'Try adjusting your filters')}
+                                </td></tr>
+                            ` : pageLeads.map((lead, idx) => {
+                                const name = getLeadDisplayName(lead);
+                                const category = getLeadCategory(lead);
+                                const rating = getLeadRating(lead);
+                                const reviews = getLeadReviews(lead);
+                                const phone = getLeadPhone(lead);
+                                const image = getLeadImage(lead);
+                                const mapsLink = getLeadMapsLink(lead);
+                                const website = getLeadWebsite(lead);
+                                const score = calculateLeadScore(lead._source || {});
+                                return `
+                                <tr class="${state.selectedLeadIds.has(lead.id) ? 'selected' : ''}" onclick="if(!event.target.closest('button')&&!event.target.closest('select')&&!event.target.closest('a'))App.openLead('${lead.id}')">
+                                    <td onclick="event.stopPropagation()"><input type="checkbox" ${state.selectedLeadIds.has(lead.id) ? 'checked' : ''} onchange="App.toggleSelect('${lead.id}', this.checked)" /></td>
+                                    <td>
+                                        <div class="lead-cell">
+                                            ${image ? `<img class="lead-avatar" src="${escapeHTML(image)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" />` : ''}
+                                            <div class="lead-avatar-fallback" style="${image ? 'display:none' : ''}">${name.charAt(0).toUpperCase()}</div>
+                                            <div>
+                                                <div class="lead-name">${escapeHTML(name)}</div>
+                                                <div class="lead-score">
+                                                    <span class="lead-score-ring" style="background:${score >= 70 ? 'rgba(52,211,153,0.15)' : score >= 40 ? 'rgba(91,124,255,0.15)' : 'rgba(255,255,255,0.05)'};color:${score >= 70 ? 'var(--green)' : score >= 40 ? 'var(--blue)' : 'var(--text-secondary)'}">${score}</span>
+                                                    <span class="text-muted text-xs">score</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><div class="truncate" style="max-width:140px" title="${escapeHTML(category)}">${escapeHTML(category) || '<span class="text-muted">—</span>'}</div></td>
+                                    <td>${rating ? `<span class="rating-badge">${svgIcon('star', 14)} ${rating}</span>` : '<span class="text-muted">—</span>'}</td>
+                                    <td>${reviews ? reviews.toLocaleString() : '<span class="text-muted">—</span>'}</td>
+                                    <td><span class="phone-text">${escapeHTML(phone) || '<span class="text-muted">—</span>'}</span></td>
+                                    <td onclick="event.stopPropagation()">
+                                        <select class="status-select" style="background:var(--panel);border:1px solid var(--border);padding:5px 24px 5px 8px;font-size:10px" onchange="setPriority('${lead.id}', this.value)">
+                                            ${PRIORITIES.map(p => `<option value="${p}" ${lead.priority === p ? 'selected' : ''}>${p}</option>`).join('')}
+                                        </select>
+                                    </td>
+                                    <td onclick="event.stopPropagation()">
+                                        <span class="status-pill status-${statusClass(lead.crm_status)}">${statusLabel(lead.crm_status)}</span>
+                                    </td>
+                                    <td><span class="text-xs text-muted">${formatDate(lead.last_called_at)}</span></td>
+                                    <td onclick="event.stopPropagation()">
+                                        <div style="display:flex;gap:6px;flex-wrap:wrap">
+                                            ${phone ? `<button class="btn btn-success btn-xs" onclick="event.stopPropagation();logCall('${lead.id}')" title="Log Call">${svgIcon('phone', 14)}</button>` : ''}
+                                            ${mapsLink ? `<a href="${escapeHTML(mapsLink)}" target="_blank" rel="noopener" class="btn btn-xs" title="Open in Google Maps" onclick="event.stopPropagation()">${svgIcon('map', 14)}</a>` : ''}
+                                            ${website ? `<a href="${escapeHTML(website)}" target="_blank" rel="noopener" class="btn btn-xs" title="Visit Website" onclick="event.stopPropagation()">${svgIcon('globe', 14)}</a>` : ''}
+                                            <button class="btn btn-xs" onclick="event.stopPropagation();App.openLead('${lead.id}')" title="View Details">${svgIcon('external', 14)}</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <div>${filtered.length} leads • Page ${page} of ${totalPages}</div>
+                    <div class="pagination">
+                        <button class="page-btn" onclick="App.goToPage(${page - 1})" ${page <= 1 ? 'disabled' : ''}>‹</button>
+                        ${Array.from({length: Math.min(5, totalPages)}, (_, i) => {
+                            let p = page - 2 + i;
+                            if (p < 1) p = 1;
+                            if (p > totalPages) p = totalPages;
+                            return `<button class="page-btn ${p === page ? 'active' : ''}" onclick="App.goToPage(${p})">${p}</button>`;
+                        }).join('')}
+                        <button class="page-btn" onclick="App.goToPage(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>›</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderAnalyticsPage() {
+    const analytics = getAnalytics();
+    const dailyData = getDailyAnalytics();
+    const hasData = state.leads.length > 0;
+    return `
+        ${renderHeader()}
+        <div class="app">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">${svgIcon('barChart', 18)} Analytics</h2>
+                    <div class="period-selector">
+                        ${['7d','30d','90d','all'].map(p => `<button class="period-btn ${state.analyticsPeriod === p ? 'active' : ''}" onclick="App.setPeriod('${p}')">${p === 'all' ? 'All Time' : p}</button>`).join('')}
+                    </div>
+                </div>
+                ${!hasData ? renderEmptyState(svgIcon('barChart', 48), 'No analytics yet', 'Import leads and start calling to see analytics') : ''}
+                ${hasData ? `
+                <!-- Conversion Metrics -->
+                <div class="conversion-grid mb-4">
+                    <div class="conversion-card">
+                        <div class="conversion-value">${analytics.callRate.toFixed(1)}%</div>
+                        <div class="conversion-label">Call Rate</div>
+                    </div>
+                    <div class="conversion-card">
+                        <div class="conversion-value">${analytics.interestRate.toFixed(1)}%</div>
+                        <div class="conversion-label">Interest Rate</div>
+                    </div>
+                    <div class="conversion-card">
+                        <div class="conversion-value">${analytics.followUpRate.toFixed(1)}%</div>
+                        <div class="conversion-label">Follow-up Rate</div>
+                    </div>
+                    <div class="conversion-card">
+                        <div class="conversion-value">${analytics.closeRate.toFixed(1)}%</div>
+                        <div class="conversion-label">Close Rate</div>
+                    </div>
+                    <div class="conversion-card">
+                        <div class="conversion-value">${analytics.leadToDealRate.toFixed(1)}%</div>
+                        <div class="conversion-label">Lead-to-Deal</div>
+                    </div>
+                    <div class="conversion-card">
+                        <div class="conversion-value">${formatCurrency(analytics.revenuePerCall)}</div>
+                        <div class="conversion-label">Revenue / Call</div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <!-- Daily Calls Chart -->
+                    <div class="card">
+                        <div class="card-title">${svgIcon('activity', 14)} Daily Calls</div>
+                        <div class="chart-container">
+                            <canvas id="callsChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Revenue Chart -->
+                    <div class="card">
+                        <div class="card-title">${svgIcon('rupee', 14)} Daily Revenue</div>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Deals Chart -->
+                    <div class="card">
+                        <div class="card-title">${svgIcon('check', 14)} Deals Closed</div>
+                        <div class="chart-container">
+                            <canvas id="dealsChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Funnel Chart -->
+                    <div class="card">
+                        <div class="card-title">${svgIcon('target', 14)} Funnel</div>
+                        <div class="chart-container">
+                            <canvas id="funnelChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+}
+
+function renderFollowupsPage() {
+    const followups = getFollowups();
+    const all = [
+        { key: 'overdue', label: 'Overdue', items: followups.overdue, icon: svgIcon('alert', 16) },
+        { key: 'today', label: 'Today', items: followups.today, icon: svgIcon('calendar', 16) },
+        { key: 'upcoming', label: 'Upcoming', items: followups.upcoming, icon: svgIcon('clock', 16) }
+    ];
+    return `
+        ${renderHeader()}
+        <div class="app">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">${svgIcon('calendar', 18)} Follow Ups</h2>
+                </div>
+                ${all.map(tab => `
+                    <div class="card" style="margin-bottom:16px">
+                        <div class="card-title">${tab.icon} ${tab.label} (${tab.items.length})</div>
+                        ${tab.items.length === 0 ? `<div style="color:var(--text-secondary);font-size:13px;padding:20px 0">No follow-ups ${tab.key === 'overdue' ? 'overdue' : tab.key === 'today' ? 'today' : 'upcoming'}</div>` : `
+                        <div style="display:flex;flex-direction:column;gap:8px">
+                            ${tab.items.map(l => `
+                                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,0.02);cursor:pointer" onclick="App.openLead('${l.id}')">
+                                    <div style="display:flex;align-items:center;gap:12px">
+                                        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:grid;place-items:center;font-weight:700;font-size:14px;color:white;flex-shrink:0">${getLeadDisplayName(l).charAt(0).toUpperCase()}</div>
+                                        <div>
+                                            <div style="font-size:13px;font-weight:700">${escapeHTML(getLeadDisplayName(l))}</div>
+                                            <div style="font-size:12px;color:var(--text-secondary)">${escapeHTML(getLeadPhone(l)) || 'No phone'} • ${formatDate(l.follow_up_date)}</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex;gap:6px">
+                                        ${getLeadPhone(l) ? `<button class="btn btn-success btn-xs" onclick="event.stopPropagation();logCall('${l.id}')">${svgIcon('phone', 14)} Call</button>` : ''}
+                                        <button class="btn btn-xs" onclick="event.stopPropagation();App.openLead('${l.id}')">${svgIcon('external', 14)} View</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        `}
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function renderSettingsPage() {
+    return `
+        ${renderHeader()}
+        <div class="app">
+            <div class="section">
+                <h2 class="section-title" style="margin-bottom:16px">${svgIcon('settings', 18)} Settings</h2>
+                <div class="card" style="max-width:600px">
+                    <div class="form-group">
+                        <label class="form-label">Daily Call Goal</label>
+                        <input type="number" class="form-input" value="${state.settings.dailyGoal}" onchange="App.updateSetting('dailyGoal', parseInt(this.value) || 100)" min="1" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Default Deal Value (INR)</label>
+                        <input type="number" class="form-input" value="${state.settings.defaultDealValue}" onchange="App.updateSetting('defaultDealValue', parseInt(this.value) || 8000)" min="0" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Currency</label>
+                        <select class="form-select" onchange="App.updateSetting('currency', this.value)">
+                            <option value="INR" ${state.settings.currency === 'INR' ? 'selected' : ''}>INR (?)</option>
+                            <option value="USD" ${state.settings.currency === 'USD' ? 'selected' : ''}>USD ($)</option>
+                            <option value="EUR" ${state.settings.currency === 'EUR' ? 'selected' : ''}>EUR (€)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Default Sort</label>
+                        <select class="form-select" onchange="App.updateSetting('defaultSort', this.value)">
+                            ${[['priority-desc','Priority (High to Low)'],['name-asc','Name (A-Z)'],['rating-desc','Rating'],['reviews-desc','Reviews']].map(([v,l]) => `<option value="${v}" ${state.settings.defaultSort === v ? 'selected' : ''}>${l}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                            <input type="checkbox" ${state.settings.confirmBeforeCloseDeal ? 'checked' : ''} onchange="App.updateSetting('confirmBeforeCloseDeal', this.checked)" />
+                            Confirm before closing deal
+                        </label>
+                    </div>
+                    <div class="divider"></div>
+                    <button class="btn btn-danger" onclick="App.showClearConfirm()">${svgIcon('trash', 16)} Clear Workspace</button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderLeadDetail(lead) {
+    const name = getLeadDisplayName(lead);
+    const category = getLeadCategory(lead);
+    const rating = getLeadRating(lead);
+    const reviews = getLeadReviews(lead);
+    const phone = getLeadPhone(lead);
+    const website = getLeadWebsite(lead);
+    const image = getLeadImage(lead);
+    const mapsLink = getLeadMapsLink(lead);
+    const description = getLeadDescription(lead);
+    const address = getLeadAddress(lead);
+    const score = calculateLeadScore(lead._source || {});
+    const activities = lead._activity || [];
+    return `
+        <div>
+            <!-- Image -->
+            ${image ? `<img class="lead-detail-image" src="${escapeHTML(image)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" />` : ''}
+            <div class="lead-detail-image-fallback" style="${image ? 'display:none' : ''}">${svgIcon('building', 48)}</div>
+
+            <!-- Actions -->
+            <div class="action-row">
+                ${phone ? `<button class="btn btn-success" onclick="logCall('${lead.id}');App.renderDrawer()">${svgIcon('phone', 16)} Call Lead</button>` : ''}
+                ${mapsLink ? `<a href="${escapeHTML(mapsLink)}" target="_blank" rel="noopener" class="btn">${svgIcon('map', 16)} Open in Google Maps</a>` : ''}
+                ${website ? `<a href="${escapeHTML(website)}" target="_blank" rel="noopener" class="btn">${svgIcon('globe', 16)} Visit Website</a>` : `<span class="btn" style="opacity:0.5;cursor:default">${svgIcon('globe', 16)} No Website</span>`}
+            </div>
+
+            <!-- Info Grid -->
+            <div class="grid-2" style="margin-bottom:16px">
+                <div>
+                    <div style="font-size:20px;font-weight:800;margin-bottom:4px">${escapeHTML(name)}</div>
+                    ${category ? `<div style="color:var(--text-secondary);font-size:13px;margin-bottom:8px">${escapeHTML(category)}</div>` : ''}
+                    ${rating ? `<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><span class="rating-badge">${svgIcon('star', 16)} ${rating}</span>${reviews ? `<span style="color:var(--text-secondary);font-size:12px">${reviews.toLocaleString()} reviews</span>` : ''}</div>` : ''}
+                </div>
+                <div style="text-align:right">
+                    <div class="lead-score" style="font-size:13px;padding:6px 12px">
+                        <span class="lead-score-ring" style="width:28px;height:28px;font-size:11px;background:${score >= 70 ? 'rgba(52,211,153,0.15)' : score >= 40 ? 'rgba(91,124,255,0.15)' : 'rgba(255,255,255,0.05)'};color:${score >= 70 ? 'var(--green)' : score >= 40 ? 'var(--blue)' : 'var(--text-secondary)'}">${score}</span>
+                        Lead Score
+                    </div>
+                </div>
+            </div>
+
+            <!-- CRM Fields -->
+            <div class="card" style="margin-bottom:16px">
+                <div class="card-title">CRM Details</div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" onchange="changeLeadStatus('${lead.id}', this.value);App.renderDrawer()">
+                            ${STATUSES.map(s => `<option value="${s}" ${lead.crm_status === s ? 'selected' : ''}>${statusLabel(s)}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select class="form-select" onchange="setPriority('${lead.id}', this.value);App.renderDrawer()">
+                            ${PRIORITIES.map(p => `<option value="${p}" ${lead.priority === p ? 'selected' : ''}>${p}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Call Count</label>
+                        <div style="font-size:20px;font-weight:800;color:var(--blue)">${lead.call_count || 0}</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Called</label>
+                        <div style="font-size:13px;color:var(--text-secondary)">${formatFullDate(lead.last_called_at)}</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Follow-up Date</label>
+                        <input type="datetime-local" class="form-input" value="${lead.follow_up_date ? lead.follow_up_date.slice(0, 16) : ''}" onchange="updateLeadField('${lead.id}', 'follow_up_date', this.value ? new Date(this.value).toISOString() : null);App.renderDrawer()" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Deal Value</label>
+                        <input type="number" class="form-input" value="${lead.deal_value || ''}" placeholder="?0" onchange="updateLeadField('${lead.id}', 'deal_value', this.value ? Number(this.value) : null)" />
+                    </div>
+                    ${lead.deal_closed_at ? `<div class="form-group"><label class="form-label">Deal Closed At</label><div style="font-size:13px;color:var(--text-secondary)">${formatFullDate(lead.deal_closed_at)}</div></div>` : ''}
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="card" style="margin-bottom:16px">
+                <div class="card-title">Notes</div>
+                <textarea class="form-textarea" placeholder="Add notes about this lead..." onchange="updateLeadField('${lead.id}', 'notes', this.value)">${escapeHTML(lead.notes || '')}</textarea>
+            </div>
+
+            <!-- Close Deal Button -->
+            ${lead.crm_status !== 'CLOSED_DEAL' ? `
+            <button class="btn btn-success" style="width:100%;justify-content:center;margin-bottom:16px" onclick="App.showCloseDealModal('${lead.id}')">${svgIcon('rupee', 16)} Close Deal</button>
+            ` : ''}
+
+            <!-- Activity Timeline -->
+            <div class="card">
+                <div class="card-title">${svgIcon('activity', 14)} Activity</div>
+                <div class="timeline">
+                    ${activities.length === 0 ? '<div style="color:var(--text-secondary);font-size:13px">No activity yet</div>' : activities.map(act => `
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-time">${formatFullDate(act.timestamp)}</div>
+                            <div class="timeline-text">${escapeHTML(act.text)}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <!-- Source Data -->
+            <div class="card" style="margin-top:16px">
+                <div class="card-title">${svgIcon('building', 14)} Source Data</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+                    ${address ? `<div><span class="text-muted">Address:</span> ${escapeHTML(address)}</div>` : ''}
+                    ${phone ? `<div><span class="text-muted">Phone:</span> ${escapeHTML(phone)}</div>` : ''}
+                    ${website ? `<div><span class="text-muted">Website:</span> <a href="${escapeHTML(website)}" target="_blank" rel="noopener" style="color:var(--blue)">${escapeHTML(website)}</a></div>` : ''}
+                    ${mapsLink ? `<div><span class="text-muted">Maps:</span> <a href="${escapeHTML(mapsLink)}" target="_blank" rel="noopener" style="color:var(--blue)">Open Maps</a></div>` : ''}
+                    ${description ? `<div style="grid-column:span 2"><span class="text-muted">Description:</span> ${escapeHTML(description)}</div>` : ''}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/* ============================================================
+   MAIN APP CONTROLLER
+   ============================================================ */
+const App = {
+    navigate(page) {
+        state.currentPage = page;
+        state.currentPageNum = 1;
+        state.selectedLeadIds.clear();
+        window.scrollTo(0, 0);
+        this.render();
+        document.querySelectorAll('.mobile-nav-item').forEach(el => {
+            el.classList.toggle('active', el.dataset.page === page);
+        });
+    },
+
+    render() {
+        const app = document.getElementById('app');
+        switch (state.currentPage) {
+            case 'overview': app.innerHTML = renderOverview(); break;
+            case 'leads': app.innerHTML = renderLeadsPage(); break;
+            case 'analytics': app.innerHTML = renderAnalyticsPage(); initCharts(); break;
+            case 'followups': app.innerHTML = renderFollowupsPage(); break;
+            case 'settings': app.innerHTML = renderSettingsPage(); break;
+            default: app.innerHTML = renderOverview();
+        }
+    },
+
+    renderDrawer() {
+        const lead = state.leads.find(l => l.id === state.leadDetailId);
+        if (lead) {
+            openDrawer(getLeadDisplayName(lead), renderLeadDetail(lead));
+        }
+    },
+
+    openLead(id) {
+        state.leadDetailId = id;
+        const lead = state.leads.find(l => l.id === id);
+        if (lead) {
+            openDrawer(getLeadDisplayName(lead), renderLeadDetail(lead));
+        }
+    },
+
+    onSearch(query) {
+        state.searchQuery = query;
+        state.currentPageNum = 1;
+        this.render();
+    },
+
+    setStatusFilter(filter) {
+        state.statusFilter = filter;
+        state.currentPageNum = 1;
+        this.render();
+    },
+
+    setPriorityFilter(filter) {
+        state.priorityFilter = filter;
+        state.currentPageNum = 1;
+        this.render();
+    },
+
+    setWebsiteFilter(filter) {
+        state.websiteFilter = filter;
+        state.currentPageNum = 1;
+        this.render();
+    },
+
+    setRatingFilter(filter) {
+        state.ratingFilter = filter;
+        state.currentPageNum = 1;
+        this.render();
+    },
+
+    setSort(sortField) {
+        state.sortField = sortField;
+        this.render();
+    },
+
+    setPeriod(period) {
+        state.analyticsPeriod = period;
+        this.render();
+    },
+
+    goToPage(page) {
+        state.currentPageNum = page;
+        this.render();
+    },
+
+    toggleSelect(id, checked) {
+        if (checked) state.selectedLeadIds.add(id);
+        else state.selectedLeadIds.delete(id);
+        this.render();
+    },
+
+    toggleSelectAll(checked) {
+        const filtered = getFilteredLeads();
+        const start = (state.currentPageNum - 1) * PAGE_SIZE;
+        const pageLeads = filtered.slice(start, start + PAGE_SIZE);
+        for (const lead of pageLeads) {
+            if (checked) state.selectedLeadIds.add(lead.id);
+            else state.selectedLeadIds.delete(lead.id);
+        }
+        this.render();
+    },
+
+    callNextLead() {
+        const uncalled = state.leads.filter(l => l.crm_status === 'NOT_CALLED');
+        if (uncalled.length === 0) {
+            showToast('No uncalled leads remaining!', 'info');
+            return;
+        }
+        const priorityOrder = { 'HOT': 0, 'HIGH': 1, 'MEDIUM': 2, 'LOW': 3 };
+        uncalled.sort((a, b) => (priorityOrder[a.priority] || 9) - (priorityOrder[b.priority] || 9));
+        const next = uncalled[0];
+        this.openLead(next.id);
+    },
+
+    showCloseDealModal(leadId) {
+        const lead = state.leads.find(l => l.id === leadId);
+        if (!lead) return;
+        const defaultVal = lead.deal_value || state.settings.defaultDealValue;
+        showModal(`
+            <div class="modal-header">
+                <h3 class="modal-title">Close Deal</h3>
+                <button class="modal-close" onclick="closeModal(false)">${svgIcon('x', 16)}</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin:0 0 16px;color:var(--text-secondary)">Closing deal with <strong style="color:var(--text)">${escapeHTML(getLeadDisplayName(lead))}</strong></p>
+                <div class="form-group">
+                    <label class="form-label">Deal Value (${state.settings.currency})</label>
+                    <input type="number" class="form-input" id="dealValueInput" value="${defaultVal}" min="0" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal(false)">Cancel</button>
+                <button class="btn btn-success" onclick="const val=parseInt(document.getElementById('dealValueInput').value)||${state.settings.defaultDealValue};closeDeal('${leadId}', val);closeModal(true)">Close Deal</button>
+            </div>
+        `);
+    },
+
+    showClearConfirm() {
+        showModal(`
+            <div class="modal-header">
+                <h3 class="modal-title">Clear Workspace</h3>
+                <button class="modal-close" onclick="closeModal(false)">${svgIcon('x', 16)}</button>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-icon danger">${svgIcon('trash', 24)}</div>
+                <p style="margin:0 0 8px;font-weight:600">This will permanently delete all leads, CRM data, and settings.</p>
+                <p style="margin:0;color:var(--text-secondary);font-size:13px">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal(false)">Cancel</button>
+                <button class="btn btn-danger" onclick="clearAll();closeModal(true)">Clear Everything</button>
+            </div>
+        `).then(confirmed => {
+            if (confirmed) {
+                clearAll();
+            }
+        });
+    },
+
+    updateSetting(key, value) {
+        state.settings[key] = value;
+        saveToDB().then(() => {
+            showToast('Settings saved', 'success');
+            this.render();
+        });
+    }
+};
+
+/* ============================================================
+   CHART INITIALIZATION
+   ============================================================ */
+function initCharts() {
+    const dailyData = getDailyAnalytics();
+    if (!dailyData.length) return;
+    const labels = dailyData.map(d => {
+        const date = new Date(d.date + 'T00:00:00');
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }).reverse();
+    const callsData = dailyData.map(d => d.calls || 0).reverse();
+    const revenueData = dailyData.map(d => d.revenue || 0).reverse();
+    const dealsData = dailyData.map(d => d.closedDeals || 0).reverse();
+    const interestedData = dailyData.map(d => d.interested || 0).reverse();
+
+    const chartDefaults = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: 'rgba(14,18,30,0.9)',
+                titleColor: '#f0f3ff',
+                bodyColor: '#8b95b0',
+                borderColor: 'rgba(255,255,255,0.1)',
+                borderWidth: 1,
+                cornerRadius: 8,
+                padding: 10
+            }
+        },
+        scales: {
+            x: {
+                grid: { color: 'rgba(255,255,255,0.04)' },
+                ticks: { color: '#8b95b0', font: { size: 10 } }
+            },
+            y: {
+                grid: { color: 'rgba(255,255,255,0.04)' },
+                ticks: { color: '#8b95b0', font: { size: 10 } },
+                beginAtZero: true
+            }
+        }
     };
 
-    return names[status] || status;
+    if (state.charts.callsChart) state.charts.callsChart.destroy();
+    if (state.charts.revenueChart) state.charts.revenueChart.destroy();
+    if (state.charts.dealsChart) state.charts.dealsChart.destroy();
+    if (state.charts.funnelChart) state.charts.funnelChart.destroy();
+
+    const callsCtx = document.getElementById('callsChart');
+    if (callsCtx) {
+        state.charts.callsChart = new Chart(callsCtx, {
+            type: 'bar',
+            data: { labels, datasets: [{ label: 'Calls', data: callsData, backgroundColor: 'rgba(91,124,255,0.6)', borderRadius: 4 }] },
+            options: chartDefaults
+        });
+    }
+    const revenueCtx = document.getElementById('revenueChart');
+    if (revenueCtx) {
+        state.charts.revenueChart = new Chart(revenueCtx, {
+            type: 'bar',
+            data: { labels, datasets: [{ label: 'Revenue', data: revenueData, backgroundColor: 'rgba(79,209,197,0.6)', borderRadius: 4 }] },
+            options: chartDefaults
+        });
+    }
+    const dealsCtx = document.getElementById('dealsChart');
+    if (dealsCtx) {
+        state.charts.dealsChart = new Chart(dealsCtx, {
+            type: 'line',
+            data: { labels, datasets: [{ label: 'Deals', data: dealsData, borderColor: 'rgba(52,211,153,0.8)', backgroundColor: 'rgba(52,211,153,0.1)', fill: true, tension: 0.3, pointRadius: 3 }] },
+            options: chartDefaults
+        });
+    }
+    const funnelCtx = document.getElementById('funnelChart');
+    if (funnelCtx) {
+        const analytics = getAnalytics();
+        state.charts.funnelChart = new Chart(funnelCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Total', 'Called', 'Interested', 'Follow Ups', 'Closed'],
+                datasets: [{ data: [analytics.total, analytics.called, analytics.interested, analytics.followUps, analytics.closedDeals], backgroundColor: ['rgba(91,124,255,0.6)','rgba(79,209,197,0.6)','rgba(52,211,153,0.6)','rgba(251,191,36,0.6)','rgba(79,209,197,0.8)'], borderRadius: 4 }]
+            },
+            options: { ...chartDefaults, indexAxis: 'y' }
+        });
+    }
 }
 
+/* ============================================================
+   IMPORT HANDLERS
+   ============================================================ */
+let importMode = 'replace';
 
-function escapeHTML(value) {
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-
+function showImportOptions(merge = false) {
+    importMode = merge ? 'merge' : 'replace';
+    document.getElementById('fileInput')?.click();
 }
 
-
-function escapeAttribute(value) {
-
-    return String(value)
-        .replaceAll("\\", "\\\\")
-        .replaceAll("'", "\\'");
+async function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (state.leads.length > 0 && !confirm(`Import mode: ${importMode === 'merge' ? 'Merge with existing leads' : 'Replace existing workspace'}. Continue?`)) {
+        event.target.value = '';
+        return;
+    }
+    await handleFileImport(file, importMode === 'merge');
+    event.target.value = '';
 }
 
-
-function showToast(message) {
-
-    const toast =
-        document.getElementById("toast");
-
-    toast.textContent =
-        message;
-
-    toast.classList.add("show");
-
-    clearTimeout(
-        window.__toastTimer
-    );
-
-    window.__toastTimer =
-        setTimeout(
-            () =>
-                toast.classList.remove("show"),
-            2200
-        );
-
+async function handleDrop(event) {
+    const file = event.dataTransfer.files[0];
+    if (!file) return;
+    if (state.leads.length > 0 && !confirm(`Import mode: ${importMode === 'merge' ? 'Merge with existing leads' : 'Replace existing workspace'}. Continue?`)) {
+        return;
+    }
+    await handleFileImport(file, importMode === 'merge');
 }
 
+/* ============================================================
+   CLEAR ALL
+   ============================================================ */
+async function clearAll() {
+    state.leads = [];
+    state.settings = { ...DEFAULT_SETTINGS };
+    state.dailyActivity = {};
+    state.sourceColumns = [];
+    state.selectedLeadIds.clear();
+    state.importStats = null;
+    await saveToDB();
+    App.render();
+    showToast('Workspace cleared', 'success');
+}
 
-/* Initial render */
-render();
+/* ============================================================
+   INITIALIZATION
+   ============================================================ */
+async function init() {
+    await loadFromDB();
+    if (state.settings.defaultSort) {
+        state.sortField = state.settings.defaultSort;
+    }
+    App.render();
+    setupDragDrop();
+}
 
+function setupDragDrop() {
+    document.addEventListener('dragover', (e) => {
+        const dropzone = document.getElementById('dropzone');
+        if (dropzone && dropzone.contains(e.target)) {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        }
+    });
+    document.addEventListener('dragleave', (e) => {
+        const dropzone = document.getElementById('dropzone');
+        if (dropzone && !dropzone.contains(e.relatedTarget)) {
+            dropzone.classList.remove('dragover');
+        }
+    });
+    document.addEventListener('drop', (e) => {
+        const dropzone = document.getElementById('dropzone');
+        if (dropzone && dropzone.contains(e.target)) {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFileImport(file, importMode === 'merge');
+        }
+    });
+}
+
+const originalRender = App.render.bind(App);
+App.render = function() {
+    originalRender();
+    setupDragDrop();
+};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeDrawer();
+        closeModal(false);
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        App.navigate('leads');
+        setTimeout(() => document.getElementById('searchInput')?.focus(), 100);
+    }
+});
+
+init();
 </script>
-
 </body>
 </html>

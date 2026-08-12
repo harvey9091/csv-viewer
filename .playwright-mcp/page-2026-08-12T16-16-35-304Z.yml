@@ -1,0 +1,164 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e2]:
+    - banner [ref=f3e218]:
+      - generic [ref=f3e219]:
+        - generic [ref=f3e220]: LF
+        - generic [ref=f3e221]:
+          - heading "LeadFlow" [level=1] [ref=f3e222]
+          - paragraph [ref=f3e223]: Premium Lead Calling Workspace
+      - navigation [ref=f3e224]:
+        - button "Overview" [ref=f3e225] [cursor=pointer]
+        - button "Leads" [ref=f3e231] [cursor=pointer]
+        - button "Analytics" [ref=f3e237] [cursor=pointer]
+        - button "Follow Ups" [ref=f3e241] [cursor=pointer]
+      - generic [ref=f3e244]:
+        - button "Settings" [ref=f3e245] [cursor=pointer]
+        - button "Clear" [ref=f3e249] [cursor=pointer]
+        - button "Export" [ref=f3e253] [cursor=pointer]
+    - generic [ref=f3e257]:
+      - group [ref=f3e258]:
+        - generic "Import / Re-import CSV" [ref=f3e259] [cursor=pointer]
+      - generic [ref=f3e263]:
+        - textbox "Search leads..." [ref=f3e265]
+        - generic [ref=f3e266]:
+          - button "All" [ref=f3e267] [cursor=pointer]
+          - button "NOT CALLED" [ref=f3e268] [cursor=pointer]
+          - button "CALLED" [ref=f3e269] [cursor=pointer]
+          - button "INTERESTED" [ref=f3e270] [cursor=pointer]
+          - button "NOT INTERESTED" [ref=f3e271] [cursor=pointer]
+          - button "FOLLOW UP" [ref=f3e272] [cursor=pointer]
+          - button "CLOSED DEAL" [ref=f3e273] [cursor=pointer]
+        - generic [ref=f3e274]:
+          - button "High" [ref=f3e275] [cursor=pointer]
+          - button "Medium" [ref=f3e276] [cursor=pointer]
+          - button "Low" [ref=f3e277] [cursor=pointer]
+          - button "Hot" [ref=f3e278] [cursor=pointer]
+        - generic [ref=f3e279]:
+          - button "Has Website" [ref=f3e280] [cursor=pointer]
+          - button "No Website" [ref=f3e281] [cursor=pointer]
+        - combobox [ref=f3e282] [cursor=pointer]:
+          - option "Priority (High to Low)" [selected]
+          - option "Priority (Low to High)"
+          - option "Name (A-Z)"
+          - option "Name (Z-A)"
+          - option "Rating (High to Low)"
+          - option "Reviews (High to Low)"
+          - option "Most Calls"
+          - option "Deal Value (High to Low)"
+          - option "Last Called (Recent)"
+      - generic [ref=f3e283]:
+        - table [ref=f3e285]:
+          - rowgroup [ref=f3e286]:
+            - row [ref=f3e287]:
+              - columnheader [ref=f3e288] [cursor=pointer]:
+                - checkbox [ref=f3e289]
+              - columnheader "Lead" [ref=f3e290] [cursor=pointer]
+              - columnheader "Category" [ref=f3e291] [cursor=pointer]
+              - columnheader "Rating" [ref=f3e292] [cursor=pointer]
+              - columnheader "Reviews" [ref=f3e293] [cursor=pointer]
+              - columnheader "Phone" [ref=f3e294] [cursor=pointer]
+              - columnheader "Priority" [ref=f3e295] [cursor=pointer]
+              - columnheader "Status" [ref=f3e296] [cursor=pointer]
+              - columnheader "Last Called" [ref=f3e297] [cursor=pointer]
+              - columnheader "Actions" [ref=f3e298] [cursor=pointer]
+          - rowgroup [ref=f3e299]:
+            - row [ref=f3e300]:
+              - cell [ref=f3e301]:
+                - checkbox [ref=f3e302]
+              - cell "M Mount Road Bilal 91 score" [ref=f3e303]:
+                - generic [ref=f3e304]:
+                  - generic [ref=f3e305]: M
+                  - generic [ref=f3e306]:
+                    - generic [ref=f3e307]: Mount Road Bilal
+                    - generic [ref=f3e308]:
+                      - generic [ref=f3e309]: "91"
+                      - generic [ref=f3e310]: score
+              - cell "Biryani restaurant" [ref=f3e311]
+              - cell "4.2" [ref=f3e313]
+              - cell "19,749" [ref=f3e317]
+              - cell "070941 11100" [ref=f3e318]
+              - cell "HOT" [ref=f3e319]:
+                - combobox [ref=f3e320] [cursor=pointer]:
+                  - option "LOW"
+                  - option "MEDIUM"
+                  - option "HIGH"
+                  - option "HOT" [selected]
+              - cell "CLOSED DEAL" [ref=f3e321]
+              - cell "21m ago" [ref=f3e323]
+              - cell [ref=f3e324]:
+                - generic [ref=f3e325]:
+                  - button "Log Call" [ref=f3e326] [cursor=pointer]
+                  - link "Open in Google Maps" [ref=f3e329] [cursor=pointer]:
+                    - /url: https://maps.google.com/cafe1
+                  - link "Visit Website" [ref=f3e333] [cursor=pointer]:
+                    - /url: https://example.com
+                  - button "View Details" [ref=f3e337] [cursor=pointer]
+            - row [ref=f3e342]:
+              - cell [ref=f3e343]:
+                - checkbox [ref=f3e344]
+              - cell "A ABC Coffee House 78 score" [ref=f3e345]:
+                - generic [ref=f3e346]:
+                  - generic [ref=f3e347]: A
+                  - generic [ref=f3e348]:
+                    - generic [ref=f3e349]: ABC Coffee House
+                    - generic [ref=f3e350]:
+                      - generic [ref=f3e351]: "78"
+                      - generic [ref=f3e352]: score
+              - cell "Coffee shop" [ref=f3e353]
+              - cell "4.5" [ref=f3e355]
+              - cell "5,234" [ref=f3e359]
+              - cell "9876543210" [ref=f3e360]
+              - cell "HOT" [ref=f3e361]:
+                - combobox [ref=f3e362] [cursor=pointer]:
+                  - option "LOW"
+                  - option "MEDIUM"
+                  - option "HIGH"
+                  - option "HOT" [selected]
+              - cell "NOT CALLED" [ref=f3e363]
+              - cell "�" [ref=f3e365]
+              - cell [ref=f3e366]:
+                - generic [ref=f3e367]:
+                  - button "Log Call" [ref=f3e368] [cursor=pointer]
+                  - link "Open in Google Maps" [ref=f3e371] [cursor=pointer]:
+                    - /url: https://maps.google.com/cafe2
+                  - button "View Details" [ref=f3e375] [cursor=pointer]
+            - row [ref=f3e380]:
+              - cell [ref=f3e381]:
+                - checkbox [ref=f3e382]
+              - cell "X XYZ Restaurant 89 score" [ref=f3e383]:
+                - generic [ref=f3e384]:
+                  - generic [ref=f3e385]: X
+                  - generic [ref=f3e386]:
+                    - generic [ref=f3e387]: XYZ Restaurant
+                    - generic [ref=f3e388]:
+                      - generic [ref=f3e389]: "89"
+                      - generic [ref=f3e390]: score
+              - cell "Restaurant" [ref=f3e391]
+              - cell "3.8" [ref=f3e393]
+              - cell "1,200" [ref=f3e397]
+              - cell "8765432109" [ref=f3e398]
+              - cell "HOT" [ref=f3e399]:
+                - combobox [ref=f3e400] [cursor=pointer]:
+                  - option "LOW"
+                  - option "MEDIUM"
+                  - option "HIGH"
+                  - option "HOT" [selected]
+              - cell "NOT CALLED" [ref=f3e401]
+              - cell "�" [ref=f3e403]
+              - cell [ref=f3e404]:
+                - generic [ref=f3e405]:
+                  - button "Log Call" [ref=f3e406] [cursor=pointer]
+                  - link "Open in Google Maps" [ref=f3e409] [cursor=pointer]:
+                    - /url: https://maps.google.com/cafe3
+                  - link "Visit Website" [ref=f3e413] [cursor=pointer]:
+                    - /url: https://xyz.com
+                  - button "View Details" [ref=f3e417] [cursor=pointer]
+        - generic [ref=f3e422]:
+          - generic [ref=f3e423]: 3 leads � Page 1 of 1
+          - generic [ref=f3e424]:
+            - button "�" [disabled] [ref=f3e425]
+            - button "1" [ref=f3e426] [cursor=pointer]
+            - button "�" [disabled] [ref=f3e427]
+  - generic [ref=f3e211]:
+    - heading "Lead Details" [level=3] [ref=f3e212]
+    - button "Close" [ref=f3e213] [cursor=pointer]
